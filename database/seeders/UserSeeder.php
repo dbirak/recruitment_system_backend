@@ -24,14 +24,14 @@ class UserSeeder extends Seeder
                     'name' => 'Jan',
                     'surname' => 'Kowalski',
                     'email' => 'kowal@gmail.com',
-                    'password' => Hash::make("kowal12@"),
+                    'password' => bcrypt("kowal12@"),
                     'role_id' => 2
                 ],
                 [
                     'name' => 'Marek',
                     'surname' => 'Nowak',
                     'email' => 'nowaczek@gmail.com',
-                    'password' => Hash::make("nowak12@"),
+                    'password' => bcrypt("nowak12@"),
                     'role_id' => 1
                 ]
             ],
