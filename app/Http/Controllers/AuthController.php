@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CompanyResource;
+use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
 use App\Models\Company;
 use App\Models\Role;
 use App\Models\User;
@@ -34,7 +37,7 @@ class AuthController extends Controller
             $token = $user->createToken('token', [Role::find($request['role_id'])->role_name])->plainTextToken;
     
             $res = [
-                'user' => $user,
+                'data' => new UserResource($user),
                 'token' => $token
             ];
             return response($res, 201);
@@ -82,8 +85,7 @@ class AuthController extends Controller
             $token = $user->createToken('token', [Role::find($request['role_id'])->role_name])->plainTextToken;
     
             $res = [
-                'user' => $user,
-                'company' => $company,
+                'data' => new CompanyResource($company),
                 'token' => $token
             ];
             return response($res, 201);
@@ -110,7 +112,7 @@ class AuthController extends Controller
         $token = $user->createToken('token', [Role::find($user->role_id)->role_name])->plainTextToken;
 
         $res = [
-            'user' => $user,
+            'data' => new UserResource($user),
             'token' => $token
         ];
 
