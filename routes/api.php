@@ -13,6 +13,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/auth/register', [AuthController::class, 'register']);
+Route::post('/auth/register/user', [AuthController::class, 'registerUser']);
+Route::post('/auth/register/company', [AuthController::class, 'registerCompany']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
