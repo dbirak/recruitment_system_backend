@@ -27,7 +27,6 @@ class RegisterCompanyRequest extends FormRequest
             'email' => 'required|string|unique:users|email|max:30',
             'hasło' => 'required|string|min:8',
             'powtórz hasło' => 'required',
-            'rola' => 'required|integer|min:2|max:2',
             //TO DO - add regex for numbers
             'ulica' => 'required|string|max:30',
             'kod pocztowy' => 'required|string|min:6|max:6',
@@ -36,7 +35,7 @@ class RegisterCompanyRequest extends FormRequest
             'regon' => 'required|string|min:9|max:9',
             'nip' => 'required|string|min:13|max:13',
             'numer telefonu' => 'required|string|min:9|max:9',
-            'województwo' => 'required|integer',
+            'województwo' => 'required|integer|exists:provinces,id',
         ];
     }
 }

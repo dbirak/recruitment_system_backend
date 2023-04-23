@@ -24,7 +24,7 @@ class CompanyRepository
             'surname' => $request['nazwisko'],
             'email' => $request['email'],
             'password' => bcrypt($request['hasło']),
-            'role_id' => $request['rola']
+            'role_id' => 2
         ]);
 
         $company = Company::create([

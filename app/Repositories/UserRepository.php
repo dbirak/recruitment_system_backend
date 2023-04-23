@@ -45,7 +45,7 @@ class UserRepository {
             'surname' => $request['nazwisko'],
             'email' => $request['email'],
             'password' => bcrypt($request['hasło']),
-            'role_id' => $request['rola']
+            'role_id' => 1
         ]);
 
         return $user;

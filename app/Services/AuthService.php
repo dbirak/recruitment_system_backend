@@ -27,7 +27,10 @@ class AuthService {
     public function loginUser(LoginUserRequest $request) 
     {       
         $user = $this->userRepository->findByEmail($request['email']);
-        $isCorrectPassword = $this->userRepository->comparePassword($request['password'], $user);
+        
+        if(!$user) $this->validateUser($user, "");
+        
+        $isCorrectPassword = $this->userRepository->comparePassword($request['hasło'], $user);
 
         $this->validateUser($user, $isCorrectPassword);
         
