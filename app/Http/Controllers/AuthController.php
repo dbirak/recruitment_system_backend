@@ -5,16 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterCompanyRequest;
 use App\Http\Requests\RegisterUserRequest;
-use App\Http\Resources\CompanyResource;
-use App\Http\Resources\UserResource;
-use App\Models\Company;
-use App\Models\Role;
-use App\Models\User;
 use App\Services\AuthService;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {

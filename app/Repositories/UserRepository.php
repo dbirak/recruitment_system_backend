@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Http\Requests\RegisterUserRequest;
-use App\Models\Company;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
