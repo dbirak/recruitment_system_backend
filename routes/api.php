@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TestTaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,9 @@ Route::post('/auth/register/user', [AuthController::class, 'registerUser']);
 Route::post('/auth/register/company', [AuthController::class, 'registerCompany']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+
+Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
+    Route::post('/company/test', [TestTaskController::class, 'store']);
+
+});
