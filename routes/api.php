@@ -21,6 +21,8 @@ Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth
 
 
 Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
+    Route::get('/company/test', [TestTaskController::class, 'index']);
     Route::post('/company/test', [TestTaskController::class, 'store']);
+    Route::get('/company/test/{id}', [TestTaskController::class, 'show']);
 
 });

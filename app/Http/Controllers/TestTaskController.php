@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddTestRequest;
 use App\Services\TestTaskService;
+use Exception;
 use Illuminate\Http\Request;
 
 class TestTaskController extends Controller
@@ -18,9 +19,10 @@ class TestTaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $res = $this->testTaskService->getAllTests($request->user()->id);
+        return response($res, 200);
     }
 
     /**
@@ -43,9 +45,18 @@ class TestTaskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id, Request $request)
     {
-        //
+        try
+        {
+            $res = $this->testTaskService->showTest($id, $request->user()->id);
+            return response($res, 200);
+        }
+        catch(Exception $e)
+        {
+            if($e instanceof Exception)
+                    return response(['message' => $e->getMessage()], 404);
+        }
     }
 
     /**
