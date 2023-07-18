@@ -30,11 +30,8 @@ class TestTaskService {
 
     public function getAllTests(string $userId)
     {
-        //return TestTaskResource::collection($this->testTaskRepository->getAllUserTestTask($userId));
 
         $testTasks = $this->testTaskRepository->getAllUserTestTask($userId);
-
-        // $answerQuestions = $this->testTaskRepository->getAllUserAnswerQuestions($testTask['id']);
 
         $res = [];
 

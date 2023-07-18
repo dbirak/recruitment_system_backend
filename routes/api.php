@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FileTaskController;
+use App\Http\Controllers\OpenTaskController;
 use App\Http\Controllers\TestTaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,4 +27,9 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::post('/company/test', [TestTaskController::class, 'store']);
     Route::get('/company/test/{id}', [TestTaskController::class, 'show']);
 
+    Route::get('/company/open-task', [OpenTaskController::class, 'index']);
+    Route::post('/company/open-task', [OpenTaskController::class, 'store']);
+
+    Route::get('/company/file-task', [FileTaskController::class, 'index']);
+    Route::post('/company/file-task', [FileTaskController::class, 'store']);
 });
