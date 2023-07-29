@@ -28,4 +28,16 @@ class FileTaskRepository {
     {
         return $this->fileTask::where("user_id", $userId)->get();
     }
+
+    public function getFileTaskById(string $fileTaskId)
+    {
+        return $this->fileTask::where('id', $fileTaskId)->get();
+    }
+
+    public function checkPermissionToFileTask(string $fileTaskId, string $userId)
+    {
+        $testTask = $this->fileTask::where('id', $fileTaskId)->first();
+        
+        return $testTask['user_id'] == $userId ? true : false ;
+    }
 }

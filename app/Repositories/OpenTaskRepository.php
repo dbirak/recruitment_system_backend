@@ -28,4 +28,16 @@ class OpenTaskRepository {
     {
         return $this->openTask::where("user_id", $userId)->get();
     }
+
+    public function getOpenTaskById(string $openTaskId)
+    {
+        return $this->openTask::where('id', $openTaskId)->get();
+    }
+
+    public function checkPermissionToOpenTask(string $openTaskId, string $userId)
+    {
+        $openTask = $this->openTask::where('id', $openTaskId)->first();
+        
+        return $openTask['user_id'] == $userId ? true : false ;
+    }
 }

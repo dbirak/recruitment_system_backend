@@ -17,6 +17,11 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ProvinceSeeder::class,
             CompanySeeder::class,
+            CategorySeeder::class,
+            ContractSeeder::class,
+            EarnTimeSeeder::class,
+            WorkTimeSeeder::class,
+            WorkTypeSeeder::class,
         ]);
     }
 }

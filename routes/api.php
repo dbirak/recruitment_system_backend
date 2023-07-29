@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileTaskController;
 use App\Http\Controllers\OpenTaskController;
@@ -29,7 +30,11 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
 
     Route::get('/company/open-task', [OpenTaskController::class, 'index']);
     Route::post('/company/open-task', [OpenTaskController::class, 'store']);
+    Route::get('/company/open-task/{id}', [OpenTaskController::class, 'show']);
 
     Route::get('/company/file-task', [FileTaskController::class, 'index']);
     Route::post('/company/file-task', [FileTaskController::class, 'store']);
+    Route::get('/company/file-task/{id}', [FileTaskController::class, 'show']);
+
+    Route::get('/company/announcement/info', [AnnouncementController::class, 'getCreateAnnoucementInfo']);
 });

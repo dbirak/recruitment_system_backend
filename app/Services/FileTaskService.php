@@ -6,6 +6,7 @@ use App\Http\Requests\AddFileTaskRequest;
 use App\Http\Resources\FileTaskResource;
 use App\Models\FileTask;
 use App\Repositories\FileTaskRepository;
+use Exception;
 
 class FileTaskService {
 
@@ -26,5 +27,16 @@ class FileTaskService {
     public function getAllFileTasks(string $userId)
     {
         return FileTaskResource::collection($this->fileTaskRepository->getAllUserfileTask($userId));
+    }
+
+    public function showFileTask(string $fileTaskId, string $userId)
+    {
+        $fileTask = $this->fileTaskRepository->getFileTaskById($fileTaskId);
+
+        if(!isset($fileTask[0])) throw new Exception("Nie znaleziono pytania!");
+
+        if($this->fileTaskRepository->checkPermissionToFileTask($fileTask[0]['id'], $userId) == 0) throw new Exception("Brak dostępu do zasobu!");
+
+        return $fileTask[0];
     }
 }

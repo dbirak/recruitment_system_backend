@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddFileTaskRequest;
 use App\Services\FileTaskService;
+use Exception;
 use Illuminate\Http\Request;
 
 class FileTaskController extends Controller
@@ -45,9 +46,18 @@ class FileTaskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id, Request $request)
     {
-        //
+        try
+        {
+            $res = $this->fileTaskService->showFileTask($id, $request->user()->id);
+            return response($res, 200);
+        }
+        catch(Exception $e)
+        {
+            if($e instanceof Exception)
+                    return response(['message' => $e->getMessage()], 404);
+        }
     }
 
     /**
