@@ -37,4 +37,7 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::get('/company/file-task/{id}', [FileTaskController::class, 'show']);
 
     Route::get('/company/announcement/info', [AnnouncementController::class, 'getCreateAnnoucementInfo']);
+    Route::get('/company/announcement/earn-time', [AnnouncementController::class, 'getCreateAnnoucementEarnTimeInfo']);
+    Route::get('/company/announcement/module', [AnnouncementController::class, 'getCreateAnnoucementModuleInfo']);
+    Route::post('/company/announcement', [AnnouncementController::class, 'store']);
 });

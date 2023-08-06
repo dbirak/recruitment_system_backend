@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\EarnTime;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Task;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 
-class EarnTimeSeeder extends Seeder
+class TaskSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,24 +14,24 @@ class EarnTimeSeeder extends Seeder
     public function run(): void
     {
         Schema::disableForeignKeyConstraints();
-        EarnTime::truncate();
+        Task::truncate();
         Schema::enableForeignKeyConstraints();
-        EarnTime::upsert(
+        Task::upsert(
             [
                 [
-                    'earn_time_name' => 'brutto / mies.',
+                    'task_name' => 'testTask',
                 ],
                 [
-                    'earn_time_name' => 'netto / mies.',
+                    'task_name' => 'openTask',
                 ],
                 [
-                    'earn_time_name' => 'brutto / godz.',
+                    'task_name' => 'fileTask',
                 ],
                 [
-                    'earn_time_name' => 'netto / godz.',
+                    'task_name' => 'cvTask',
                 ]
             ],
-            'earn_time_name'
+            'task_name'
         );
     }
 }

@@ -5,16 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class FileTask extends Model
+class Task extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'descryption', 'time', 'user_id'];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+    protected $fillable = ['task_name'];
 
     public function step()
     {

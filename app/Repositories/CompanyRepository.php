@@ -41,4 +41,9 @@ class CompanyRepository
 
         return $user;
     }
+
+    public function getCompanyByUserId(string $userId)
+    {
+        return $this->company::where('user_id', $userId)->first();
+    }
 }

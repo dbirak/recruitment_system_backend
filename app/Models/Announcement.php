@@ -40,4 +40,9 @@ class Announcement extends Model
     {
         return $this->belongsTo(WorkType::class);
     }
+
+    public function step()
+    {
+        return $this->hasMany(Step::class);
+    }
 }

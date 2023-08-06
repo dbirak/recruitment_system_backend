@@ -15,4 +15,9 @@ class OpenTask extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function step()
+    {
+        return $this->hasMany(Step::class);
+    }
 }

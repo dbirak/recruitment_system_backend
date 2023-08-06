@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AddAnnouncementRequest;
 use App\Services\AnnouncementService;
+use App\Services\FileTaskService;
+use App\Services\OpenTaskService;
+use App\Services\TestTaskService;
 use Illuminate\Http\Request;
 
 class AnnouncementController extends Controller
@@ -32,9 +36,10 @@ class AnnouncementController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(AddAnnouncementRequest $request)
     {
-        //
+        $res = $this->announcementService->createAnnouncement($request, $request->user()->id);
+        return response($res, 201);
     }
 
     /**
@@ -72,6 +77,18 @@ class AnnouncementController extends Controller
     public function getCreateAnnoucementInfo()
     {
         $res = $this->announcementService->getCreateAnnoucementInfo();
+        return response($res, 200);
+    }
+
+    public function getCreateAnnoucementEarnTimeInfo()
+    {
+        $res = $this->announcementService->getCreateAnnoucementEarnTimeInfo();
+        return response($res, 200);
+    }
+
+    public function getCreateAnnoucementModuleInfo(Request $request)
+    {
+        $res = $this->announcementService->getCreateAnnoucementModuleInfo($request->user()->id);
         return response($res, 200);
     }
 }

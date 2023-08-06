@@ -25,8 +25,8 @@ return new class extends Migration
             $table->json('requirements');
             $table->json('offer');
             $table->date('expiry_date');
-            $table->decimal('min_earn', 5, 2)->nullable();
-            $table->decimal('max_earn', 5, 2)->nullable();
+            $table->decimal('min_earn', 7, 2)->nullable();
+            $table->decimal('max_earn', 7, 2)->nullable();
             $table->foreignIdFor(EarnTime::class)->nullable()->constrained();
             $table->foreignIdFor(Contract::class)->constrained();
             $table->foreignIdFor(Company::class)->constrained();

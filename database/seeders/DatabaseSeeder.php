@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             EarnTimeSeeder::class,
             WorkTimeSeeder::class,
             WorkTypeSeeder::class,
+            TaskSeeder::class,
         ]);
     }
 }
