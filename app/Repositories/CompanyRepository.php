@@ -28,6 +28,7 @@ class CompanyRepository
         ]);
 
         $company = Company::create([
+            'name' => $request['nazwa'],
             'street' => $request['ulica'],
             'post_code' => $request['kod pocztowy'],
             'city' => $request['miasto'],

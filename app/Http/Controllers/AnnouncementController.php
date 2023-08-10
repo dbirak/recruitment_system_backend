@@ -7,6 +7,7 @@ use App\Services\AnnouncementService;
 use App\Services\FileTaskService;
 use App\Services\OpenTaskService;
 use App\Services\TestTaskService;
+use Exception;
 use Illuminate\Http\Request;
 
 class AnnouncementController extends Controller
@@ -47,7 +48,16 @@ class AnnouncementController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try
+        {
+            $res = $this->announcementService->showAnnouncement($id);
+            return response($res, 200);
+        }
+        catch(Exception $e)
+        {
+            if($e instanceof Exception)
+                    return response(['message' => $e->getMessage()], 404);
+        }
     }
 
     /**
@@ -89,6 +99,12 @@ class AnnouncementController extends Controller
     public function getCreateAnnoucementModuleInfo(Request $request)
     {
         $res = $this->announcementService->getCreateAnnoucementModuleInfo($request->user()->id);
+        return response($res, 200);
+    }
+
+    public function getPopularAnnouncement()
+    {
+        $res = $this->announcementService->getPopularAnnouncement();
         return response($res, 200);
     }
 }

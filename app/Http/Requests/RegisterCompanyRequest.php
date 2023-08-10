@@ -24,6 +24,7 @@ class RegisterCompanyRequest extends FormRequest
         return [
             'imię' => 'required|string|max:30|regex:/^[a-zA-ZĄ-ŻĄąĆćĘęŁłŃńÓóŚśŹźŻż _-]{1,}$/',
             'nazwisko' => 'required|string|max:30|regex:/^[a-zA-ZĄ-ŻĄąĆćĘęŁłŃńÓóŚśŹźŻż _-]{1,}$/',
+            'nazwa' => 'required|string|max:50|regex:/^[a-zA-ZĄ-ŻĄąĆćĘęŁłŃńÓóŚśŹźŻż. _-]{1,}$/',
             'email' => 'required|string|unique:users|email|max:30',
             'hasło' => 'required|string|min:8',
             'powtórz hasło' => 'required',

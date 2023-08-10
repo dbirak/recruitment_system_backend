@@ -14,10 +14,10 @@ class StepRepository {
         $this->step = $step;
     }
 
-    public function createStep(AddAnnouncementRequest $request, string $companyId)
+    public function createStep(AddAnnouncementRequest $request, string $announcementId)
     {
         $newStep = new Step();
-        $newStep->announcement_id = $companyId;
+        $newStep->announcement_id = $announcementId;
         $newStep->step_number = 1;
         $newStep->task_id = 4;  // cvTask
         $newStep->expiry_date = $request['data_zakonczenia'];
@@ -28,7 +28,7 @@ class StepRepository {
         foreach ($request['etapy'] as $step) 
         {
             $newStep = new Step();
-            $newStep->announcement_id = $companyId;
+            $newStep->announcement_id = $announcementId;
             $newStep->step_number = $stepNumber;
             
             if($step['module'] == "test") 

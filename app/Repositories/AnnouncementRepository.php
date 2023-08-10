@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Http\Requests\AddAnnouncementRequest;
 use App\Models\Announcement;
 use App\Models\Step;
+use Carbon\Carbon;
 
 class AnnouncementRepository {
 
@@ -37,5 +38,15 @@ class AnnouncementRepository {
         $announcement->save();
 
         return $announcement;
+    }
+
+    public function getPopularAnnouncement()
+    {
+        return $this->announcement::where('expiry_date', '>=', Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d'))->orderBy('created_at', 'desc')->limit(8)->get();
+    }
+
+    public function getAnnouncementById(string $id)
+    {
+        return $this->announcement::where("id", $id)->where('expiry_date', '>=', Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d'))->first();
     }
 }

@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Http\Requests\AddAnnouncementRequest;
+use App\Http\Resources\AnnouncementResource;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\CompanyResource;
 use App\Http\Resources\ContractResource;
 use App\Http\Resources\EarnTimeResource;
 use App\Http\Resources\FileTaskResource;
@@ -11,7 +13,9 @@ use App\Http\Resources\OpenTaskResource;
 use App\Http\Resources\TestTaskResource;
 use App\Http\Resources\WorkTimeResource;
 use App\Http\Resources\WorkTypeResource;
+use App\Models\Announcement;
 use App\Models\Category;
+use App\Models\Company;
 use App\Models\WorkType;
 use App\Repositories\AnnouncementRepository;
 use App\Repositories\CategoryRepository;
@@ -25,6 +29,7 @@ use App\Repositories\TestTaskRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WorkTimeRepository;
 use App\Repositories\WorkTypeRepository;
+use Exception;
 
 class AnnouncementService {
 
@@ -88,8 +93,22 @@ class AnnouncementService {
 
         $annoucement = $this->announcementRepository->createAnnouncement($request, $company['id']);
 
-        $steps = $this->stepRepository->createStep($request, $company['id']);
+        $steps = $this->stepRepository->createStep($request, $annoucement['id']);
 
         return $annoucement;
+    }
+
+    public function getPopularAnnouncement()
+    {
+        return AnnouncementResource::collection($this->announcementRepository->getPopularAnnouncement());
+    }
+
+    public function showAnnouncement(string $id)
+    {
+        $annoucement = $this->announcementRepository->getAnnouncementById($id);
+
+        if(!isset($annoucement)) throw new Exception("Nie znaleziono ogłoszenia!");
+
+        return new AnnouncementResource($annoucement);
     }
 }

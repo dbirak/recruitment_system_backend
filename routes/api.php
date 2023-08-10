@@ -22,12 +22,14 @@ Route::post('/auth/register/company', [AuthController::class, 'registerCompany']
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
+Route::get('/announcement/popular', [AnnouncementController::class, 'getPopularAnnouncement']);
+Route::get('/announcement/{id}', [AnnouncementController::class, 'show']);
 
 Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::get('/company/test', [TestTaskController::class, 'index']);
     Route::post('/company/test', [TestTaskController::class, 'store']);
     Route::get('/company/test/{id}', [TestTaskController::class, 'show']);
-
+    
     Route::get('/company/open-task', [OpenTaskController::class, 'index']);
     Route::post('/company/open-task', [OpenTaskController::class, 'store']);
     Route::get('/company/open-task/{id}', [OpenTaskController::class, 'show']);
@@ -40,4 +42,8 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::get('/company/announcement/earn-time', [AnnouncementController::class, 'getCreateAnnoucementEarnTimeInfo']);
     Route::get('/company/announcement/module', [AnnouncementController::class, 'getCreateAnnoucementModuleInfo']);
     Route::post('/company/announcement', [AnnouncementController::class, 'store']);
+});
+
+Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
+    //Route::get('/user/announcement/{id}', [AnnouncementController::class, 'show']);
 });

@@ -20,6 +20,7 @@ class CompanySeeder extends Seeder
         Company::upsert(
             [
                 [
+                    'name' => 'Spółka akcyjna Orchidea sp. z.o.o',
                     'street' => 'Letnia 3',
                     'post_code' => '65-123',
                     'city' => 'Rzeszów',
