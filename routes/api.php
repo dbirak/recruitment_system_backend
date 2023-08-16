@@ -24,6 +24,8 @@ Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth
 
 Route::get('/announcement/popular', [AnnouncementController::class, 'getPopularAnnouncement']);
 Route::get('/announcement/{id}', [AnnouncementController::class, 'show']);
+Route::get('/announcement/search/info', [AnnouncementController::class, 'getSearchAnnouncementInfo']);
+Route::post('/announcement/search', [AnnouncementController::class, 'searchAnnouncement']);
 
 Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::get('/company/test', [TestTaskController::class, 'index']);

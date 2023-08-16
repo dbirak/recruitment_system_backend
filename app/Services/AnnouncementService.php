@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Http\Requests\AddAnnouncementRequest;
+use App\Http\Requests\SearchAnnouncementRequest;
+use App\Http\Resources\AnnouncementCollection;
 use App\Http\Resources\AnnouncementResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\CompanyResource;
@@ -110,5 +112,10 @@ class AnnouncementService {
         if(!isset($annoucement)) throw new Exception("Nie znaleziono ogłoszenia!");
 
         return new AnnouncementResource($annoucement);
+    }
+
+    public function searchAnnouncement(SearchAnnouncementRequest $request)
+    {
+        return new AnnouncementCollection($this->announcementRepository->searchAnnouncement($request));
     }
 }

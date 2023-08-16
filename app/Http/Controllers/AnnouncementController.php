@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddAnnouncementRequest;
+use App\Http\Requests\SearchAnnouncementRequest;
+use App\Models\Announcement;
 use App\Services\AnnouncementService;
 use App\Services\FileTaskService;
 use App\Services\OpenTaskService;
@@ -105,6 +107,19 @@ class AnnouncementController extends Controller
     public function getPopularAnnouncement()
     {
         $res = $this->announcementService->getPopularAnnouncement();
+        return response($res, 200);
+    }
+
+    public function searchAnnouncement(SearchAnnouncementRequest $request)
+    {
+        $res = $this->announcementService->searchAnnouncement($request);
+        return response($res, 200);
+    }
+
+    public function getSearchAnnouncementInfo()
+    {
+        $res = $this->announcementService->getCreateAnnoucementInfo();
+        $res['earnTimes'] = $this->announcementService->getCreateAnnoucementEarnTimeInfo();
         return response($res, 200);
     }
 }
