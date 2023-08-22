@@ -47,5 +47,5 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
-    //Route::get('/user/announcement/{id}', [AnnouncementController::class, 'show']);
+    Route::get('/user/announcement/{id}', [AnnouncementController::class, 'show']);
 });
