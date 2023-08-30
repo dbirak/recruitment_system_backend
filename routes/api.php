@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileTaskController;
 use App\Http\Controllers\OpenTaskController;
@@ -47,5 +48,7 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
 });
 
 Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
-    Route::get('/user/announcement/{id}', [AnnouncementController::class, 'show']);
+    Route::get('/user/announcement/{id}', [AnnouncementController::class, 'showApplicationInfo']);
+
+    Route::post('/user/application/cv', [ApplicationController::class, 'storeCvTaskAnswer']);
 });

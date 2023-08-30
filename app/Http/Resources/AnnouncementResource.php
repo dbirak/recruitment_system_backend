@@ -36,6 +36,7 @@ class AnnouncementResource extends JsonResource
             'category' => new CategoryResource(Category::findOrFail($this->category_id)),
             'work_time' => new WorkTimeResource(WorkTime::findOrFail($this->work_time_id)),
             'work_type' => new WorkTypeResource(WorkType::findOrFail($this->work_type_id)),
+            "steps" => $this->steps,
             'created_at' => $this->created_at,
         ];
     }

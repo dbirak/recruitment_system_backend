@@ -122,4 +122,18 @@ class AnnouncementController extends Controller
         $res['earnTimes'] = $this->announcementService->getCreateAnnoucementEarnTimeInfo();
         return response($res, 200);
     }
+
+    public function showApplicationInfo(string $announcementId, Request $request)
+    {
+        try
+        {
+            $res = $this->announcementService->showApplicationInfo($announcementId, $request->user()->id);
+            return response($res, 200);
+        }
+        catch(Exception $e)
+        {
+            if($e instanceof Exception)
+                    return response(['message' => $e->getMessage()], 404);
+        }
+    }
 }

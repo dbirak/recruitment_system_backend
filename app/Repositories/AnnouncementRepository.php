@@ -55,6 +55,11 @@ class AnnouncementRepository {
         return $this->announcement::where("id", $id)->where('expiry_date', '>=', Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d'))->first();
     }
 
+    public function getAnnouncementByIdWhitoutExpiryDate(string $id)
+    {
+        return $this->announcement::where("id", $id)->first();
+    }
+
     public function getAllAnnouncements()
     {
         return new AnnouncementCollection($this->announcement::paginate(2));

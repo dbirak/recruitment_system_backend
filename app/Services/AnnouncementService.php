@@ -20,6 +20,7 @@ use App\Models\Category;
 use App\Models\Company;
 use App\Models\WorkType;
 use App\Repositories\AnnouncementRepository;
+use App\Repositories\ApplicationRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\CompanyRepository;
 use App\Repositories\ContractRepository;
@@ -31,13 +32,17 @@ use App\Repositories\TestTaskRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WorkTimeRepository;
 use App\Repositories\WorkTypeRepository;
+use Carbon\Carbon;
 use Exception;
+
+use function PHPUnit\Framework\isEmpty;
 
 class AnnouncementService {
 
     protected $announcementRepository;
     protected $companyRepository;
     protected $stepRepository;
+    protected $appliactionRepository;
 
     protected $categoryRepository;
     protected $contractRepository;
@@ -49,11 +54,12 @@ class AnnouncementService {
     protected $openTaskRepository;
     protected $fileTaskRepository;
 
-    public function __construct(AnnouncementRepository $announcementRepository, CompanyRepository $companyRepository, StepRepository $stepRepository, CategoryRepository $categoryRepository, ContractRepository $contractRepository, WorkTimeRepository $workTimeRepository, WorkTypeRepository $workTypeRepository, EarnTimeRepository $earnTimeRepository, TestTaskRepository $testTaskRepository, OpenTaskRepository $openTaskRepository, FileTaskRepository $fileTaskRepository)
+    public function __construct(AnnouncementRepository $announcementRepository, CompanyRepository $companyRepository, StepRepository $stepRepository, CategoryRepository $categoryRepository, ContractRepository $contractRepository, WorkTimeRepository $workTimeRepository, WorkTypeRepository $workTypeRepository, EarnTimeRepository $earnTimeRepository, TestTaskRepository $testTaskRepository, OpenTaskRepository $openTaskRepository, FileTaskRepository $fileTaskRepository, ApplicationRepository $appliactionRepository)
     {
         $this->announcementRepository = $announcementRepository;
         $this->companyRepository = $companyRepository;
         $this->stepRepository = $stepRepository;
+        $this->appliactionRepository = $appliactionRepository;
 
         $this->categoryRepository = $categoryRepository;
         $this->contractRepository = $contractRepository;
@@ -117,5 +123,34 @@ class AnnouncementService {
     public function searchAnnouncement(SearchAnnouncementRequest $request)
     {
         return new AnnouncementCollection($this->announcementRepository->searchAnnouncement($request));
+    }
+
+    public function showApplicationInfo(string $announcementId, string $userId)
+    {
+        $steps = $this->stepRepository->getStepsFromAnnouncement($announcementId);
+        $applicationUser = $this->appliactionRepository->getAllUserApplication($userId, $announcementId);
+        $res = $this->announcementRepository->getAnnouncementByIdWhitoutExpiryDate($announcementId);
+
+        if($res === null) throw new Exception("Nie znaleziono ogłoszenia!");
+
+        //whitout application but announcement is active
+        if(count($applicationUser) === 0 && $res['expiry_date'] >= Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d'))
+        {
+            return new AnnouncementResource($res);
+        }
+        //without application and announcement is out of date
+        else if(count($applicationUser) === 0 && $res['expiry_date'] < Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d'))
+        {
+            throw new Exception("Nie znaleziono ogłoszenia");
+        }
+        //with application
+        else if(count($applicationUser) !== 0)
+        {
+            $stepsArray = [];
+
+            
+        }
+
+        throw new Exception("Nie znaleziono ogłoszenia");
     }
 }

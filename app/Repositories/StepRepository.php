@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Http\Requests\AddAnnouncementRequest;
+use App\Models\Announcement;
 use App\Models\Step;
 
 class StepRepository {
@@ -21,6 +22,9 @@ class StepRepository {
         $newStep->step_number = 1;
         $newStep->task_id = 4;  // cvTask
         $newStep->expiry_date = $request['data_zakonczenia'];
+        $newStep->applied_users = json_encode("[]");
+        $newStep->rejected_users = json_encode("[]");
+        $newStep->accepted_users = json_encode("[]");
         $newStep->save();
 
         $stepNumber = 2;
@@ -30,6 +34,9 @@ class StepRepository {
             $newStep = new Step();
             $newStep->announcement_id = $announcementId;
             $newStep->step_number = $stepNumber;
+            $newStep->applied_users = json_encode("[]");
+            $newStep->rejected_users = json_encode("[]");
+            $newStep->accepted_users = json_encode("[]");
             
             if($step['module'] == "test") 
             {
@@ -53,5 +60,10 @@ class StepRepository {
 
             $stepNumber++;
         }
+    }
+
+    public function getStepsFromAnnouncement(string $announcementId)
+    {
+        return $this->step::where('announcement_id', $announcementId)->orderby("step_number", "asc")->get();
     }
 }

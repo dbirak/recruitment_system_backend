@@ -25,6 +25,9 @@ return new class extends Migration
             $table->foreignIdFor(OpenTask::class)->nullable()->constrained();
             $table->foreignIdFor(FileTask::class)->nullable()->constrained();
             $table->date('expiry_date')->nullable();
+            $table->json('applied_users');
+            $table->json('rejected_users');
+            $table->json('accepted_users');
             $table->timestamps();
         });
     }
