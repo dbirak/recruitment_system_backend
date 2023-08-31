@@ -12,6 +12,7 @@ use App\Http\Resources\ContractResource;
 use App\Http\Resources\EarnTimeResource;
 use App\Http\Resources\FileTaskResource;
 use App\Http\Resources\OpenTaskResource;
+use App\Http\Resources\StepResourceForUser;
 use App\Http\Resources\TestTaskResource;
 use App\Http\Resources\WorkTimeResource;
 use App\Http\Resources\WorkTypeResource;
@@ -34,6 +35,7 @@ use App\Repositories\WorkTimeRepository;
 use App\Repositories\WorkTypeRepository;
 use Carbon\Carbon;
 use Exception;
+use PhpParser\JsonDecoder;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -146,9 +148,58 @@ class AnnouncementService {
         //with application
         else if(count($applicationUser) !== 0)
         {
-            $stepsArray = [];
+            //return new AnnouncementResource($res);
 
+            $stepsArray = [];
+            $isRejected = false;
+
+            foreach ($steps as $step)
+            {
+                $isActualStep = false;
+                $answerInfo = null;
+
+                $application = null;
+                $statusInfo = in_array($userId, json_decode($step['applied_users'])) ? "applied_user" : (in_array($userId, json_decode($step['rejected_users'])) ? "rejected_user" : (in_array($userId, json_decode($step['accepted_users'])) ? "accepted_user" : null));
+
+                if($step['expiry_date'] >= Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d')) $isActualStep = true;
+                else if($step['expiry_date'] === null) $isActualStep = null; 
+                else if($step['expiry_date'] < Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d')) $isActualStep = false;
+
+                $application = $this->appliactionRepository->getApplicationById($userId, $announcementId, $step['id']);
+
+                if($isRejected) $answerInfo = null;
+                else if($application === null && $isActualStep === false) $answerInfo = "not_sended";
+                else if($application !== null && $isActualStep === false) $answerInfo = "sended";
+                else if($application === null && $isActualStep === null) $answerInfo = null;
+                else if($application !== null && $isActualStep === true) $answerInfo = "sended";
+                else if($application === null && $isActualStep === true)
+                {
+                    if($step['step_number'] >= 2)
+                    {
+                        $previousStep = $steps[$step["step_number"] - 2];
+                        if(in_array($userId, json_decode($previousStep['accepted_users']))) 
+                        {
+                            $answerInfo = "send_now";
+                        }
+                        else $answerInfo = null;
+                    }
+                    else $answerInfo = "sended";
+                }
+
+                $stepInfo['answer_info'] = $answerInfo;
+                $stepInfo['status_info'] = $statusInfo;
+                $step['info'] = $stepInfo;
+
+                $step['expiry_date'] = $isRejected ? null : $step['expiry_date'];
+
+                array_push($stepsArray, new StepResourceForUser($step));
+
+                if($statusInfo === "rejected_user") $isRejected = true;
+            }
             
+            $res['steps'] = $stepsArray;
+
+            return new AnnouncementResource($res);
         }
 
         throw new Exception("Nie znaleziono ogłoszenia");

@@ -22,9 +22,9 @@ class StepRepository {
         $newStep->step_number = 1;
         $newStep->task_id = 4;  // cvTask
         $newStep->expiry_date = $request['data_zakonczenia'];
-        $newStep->applied_users = json_encode("[]");
-        $newStep->rejected_users = json_encode("[]");
-        $newStep->accepted_users = json_encode("[]");
+        $newStep->applied_users = json_encode([]);
+        $newStep->rejected_users = json_encode([]);
+        $newStep->accepted_users = json_encode([]);
         $newStep->save();
 
         $stepNumber = 2;
