@@ -25,6 +25,7 @@ class StepRepository {
         $newStep->applied_users = json_encode([]);
         $newStep->rejected_users = json_encode([]);
         $newStep->accepted_users = json_encode([]);
+        $newStep->is_active = true;
         $newStep->save();
 
         $stepNumber = 2;
@@ -34,9 +35,9 @@ class StepRepository {
             $newStep = new Step();
             $newStep->announcement_id = $announcementId;
             $newStep->step_number = $stepNumber;
-            $newStep->applied_users = json_encode("[]");
-            $newStep->rejected_users = json_encode("[]");
-            $newStep->accepted_users = json_encode("[]");
+            $newStep->applied_users = json_encode([]);
+            $newStep->rejected_users = json_encode([]);
+            $newStep->accepted_users = json_encode([]);
             
             if($step['module'] == "test") 
             {

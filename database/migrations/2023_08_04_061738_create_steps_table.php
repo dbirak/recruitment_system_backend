@@ -28,6 +28,7 @@ return new class extends Migration
             $table->json('applied_users');
             $table->json('rejected_users');
             $table->json('accepted_users');
+            $table->boolean('is_active')->nullable();
             $table->timestamps();
         });
     }

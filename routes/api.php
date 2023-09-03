@@ -45,6 +45,8 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::get('/company/announcement/earn-time', [AnnouncementController::class, 'getCreateAnnoucementEarnTimeInfo']);
     Route::get('/company/announcement/module', [AnnouncementController::class, 'getCreateAnnoucementModuleInfo']);
     Route::post('/company/announcement', [AnnouncementController::class, 'store']);
+    Route::get('/company/announcement', [AnnouncementController::class, 'getCompanyAnnouncements']);
+    Route::get('/company/announcement/{id}', [AnnouncementController::class, 'getCompanyAnnouncementById']);
 });
 
 Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {

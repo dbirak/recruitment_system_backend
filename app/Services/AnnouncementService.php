@@ -155,15 +155,11 @@ class AnnouncementService {
 
             foreach ($steps as $step)
             {
-                $isActualStep = false;
+                $isActualStep = $this->isActualStep($step['expiry_date']);
                 $answerInfo = null;
 
                 $application = null;
                 $statusInfo = in_array($userId, json_decode($step['applied_users'])) ? "applied_user" : (in_array($userId, json_decode($step['rejected_users'])) ? "rejected_user" : (in_array($userId, json_decode($step['accepted_users'])) ? "accepted_user" : null));
-
-                if($step['expiry_date'] >= Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d')) $isActualStep = true;
-                else if($step['expiry_date'] === null) $isActualStep = null; 
-                else if($step['expiry_date'] < Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d')) $isActualStep = false;
 
                 $application = $this->appliactionRepository->getApplicationById($userId, $announcementId, $step['id']);
 
@@ -203,5 +199,67 @@ class AnnouncementService {
         }
 
         throw new Exception("Nie znaleziono ogłoszenia");
+    }
+
+    public function isActualStep($expieryDate)
+    {
+        if($expieryDate >= Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d')) return true;
+        else if($expieryDate === null) return null; 
+        else if($expieryDate < Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d')) return false;
+    }
+
+    public function getCompanyAnnouncements(string $userId)
+    {
+        return new AnnouncementCollection($this->announcementRepository->getCompanyAnnouncements($userId));
+    }
+
+    public function getCompanyAnnouncementById(string $id, string $userId)
+    {
+        $res = $this->announcementRepository->getAnnouncementByIdWhitoutExpiryDate($id);
+        $company = $this->companyRepository->getCompanyByUserId($userId);
+
+        if(!isset($res)) throw new Exception("Nie znaleziono ogłoszenia!");
+        if($res['company_id'] !== $company['id']) throw new Exception("Ogłoszenie nie należy do firmy!");
+
+        $steps = $this->stepRepository->getStepsFromAnnouncement($res['id']);
+
+        $stepsArray = [];
+        
+        foreach ($steps as $step)
+        {
+            $taskInfo = null;
+            $applicationInfo = null;
+            $canSetExpiryDate = false;
+
+            $appliedUsersCount = count(json_decode($step['applied_users']));
+            $rejectedUsersCount = count(json_decode($step['rejected_users']));
+            $acceptedUsersCount = count(json_decode($step['accepted_users']));
+
+            if($step['task_id'] ===  1) $taskInfo = $this->testTaskRepository->getUserTestTaskById($step['test_task_id']); 
+            else if($step['task_id'] ===  2) $taskInfo = $this->openTaskRepository->getOpenTaskById($step['open_task_id'])[0]; 
+            else if($step['task_id'] ===  3) $taskInfo = $this->fileTaskRepository->getFileTaskById($step['file_task_id'])[0]; 
+            else if($step['task_id'] ===  4) $taskInfo = null;
+            
+            if($step['is_active'] === null) $applicationInfo = null;    
+            else if($step['is_active'] === 0) $applicationInfo = "see_answers";
+            else if($step['is_active'] === 1) $applicationInfo = "manage_answers";
+
+            if($step['expiry_date'] === null && $steps[$step['step_number']-2] !== null && $steps[$step['step_number']-2]['expiry_date'] < Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d')) $canSetExpiryDate = true; 
+
+            $stats['applied_users_count'] = $appliedUsersCount; 
+            $stats['rejected_users_count'] = $rejectedUsersCount; 
+            $stats['accepted_users_count'] = $acceptedUsersCount; 
+            $stepInfo['stats'] = $stats;
+            $stepInfo['task_info'] = $taskInfo;
+            $stepInfo['application_info'] = $applicationInfo;
+            $stepInfo['can_change_expiry_date_info'] = $canSetExpiryDate;
+            $step['info'] = $stepInfo;
+
+            array_push($stepsArray, new StepResourceForUser($step));
+        }
+
+        $res['steps'] = $stepsArray;
+
+        return new AnnouncementResource($res);
     }
 }

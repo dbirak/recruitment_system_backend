@@ -70,7 +70,7 @@ class AnnouncementRepository {
         $query = Announcement::query();
 
         if (empty($request['umowa']) && empty($request['typ_pracy']) && empty($request['czas_pracy']) && $request['kategoria'] === 0 && empty($request['nazwa']) && $request['min_wynagrodzenie'] === null && $request['max_wynagrodzenie'] === null && $request['typ_wynagrodzenia'] === 0) {
-            return $announcements = Announcement::where('expiry_date', '>=', Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d'))->paginate(10);
+            return $announcements = Announcement::where('expiry_date', '>=', Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d'))->paginate(20);
         } 
         
         if (!empty($request['umowa'])) {
@@ -117,6 +117,12 @@ class AnnouncementRepository {
 
         $query->where('expiry_date', '>=', Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d'));
 
-        return $announcements = $query->paginate(6);
+        return $announcements = $query->paginate(20);
+    }
+
+    public function getCompanyAnnouncements(string $userId)
+    {
+        $company = $this->company::where('user_id', $userId)->first();
+        return $this->announcement::where('company_id', $company['id'])->paginate(20);
     }
 }

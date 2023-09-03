@@ -136,4 +136,24 @@ class AnnouncementController extends Controller
                     return response(['message' => $e->getMessage()], 404);
         }
     }
+
+    public function getCompanyAnnouncements(Request $request)
+    {
+        $res = $this->announcementService->getCompanyAnnouncements($request->user()->id);
+        return response($res, 200);
+    }
+
+    public function getCompanyAnnouncementById(string $id, Request $request)
+    {
+        try
+        {
+            $res = $this->announcementService->getCompanyAnnouncementById($id, $request->user()->id);
+            return response($res, 200);
+        }
+        catch(Exception $e)
+        {
+            if($e instanceof Exception)
+                    return response(['message' => $e->getMessage()], 404);
+        }
+    }
 }

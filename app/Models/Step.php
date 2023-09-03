@@ -9,7 +9,7 @@ class Step extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['announcement_id', 'step_number', 'task_id', 'test_task_id', 'open_task_id', 'file_task_id', 'expiry_date', 'applied_users', 'rejected_users', 'accepted_users'];
+    protected $fillable = ['announcement_id', 'step_number', 'task_id', 'test_task_id', 'open_task_id', 'file_task_id', 'expiry_date', 'applied_users', 'rejected_users', 'accepted_users', 'is_active'];
 
     public function announcement()
     {

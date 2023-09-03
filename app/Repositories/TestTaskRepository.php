@@ -54,6 +54,11 @@ class TestTaskRepository {
         return $this->testTask::where('user_id', $userId)->get();
     }
 
+    public function getUserTestTaskById(string $id)
+    {
+        return $this->testTask::where('id', $id)->get();
+    }
+
     public function getAllUserAnswerQuestions(int $id)
     {
         return $this->answerQuestion::where('test_task_id', $id)->get();
