@@ -67,4 +67,9 @@ class StepRepository {
     {
         return $this->step::where('announcement_id', $announcementId)->orderby("step_number", "asc")->get();
     }
+
+    public function getStepById(string $stepId)
+    {
+        return $this->step::where('id', $stepId)->first();
+    }
 }

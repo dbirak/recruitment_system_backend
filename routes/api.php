@@ -47,6 +47,8 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::post('/company/announcement', [AnnouncementController::class, 'store']);
     Route::get('/company/announcement', [AnnouncementController::class, 'getCompanyAnnouncements']);
     Route::get('/company/announcement/{id}', [AnnouncementController::class, 'getCompanyAnnouncementById']);
+    
+    Route::get('/company/application/{id}', [ApplicationController::class, 'getUsersByStep']);
 });
 
 Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {

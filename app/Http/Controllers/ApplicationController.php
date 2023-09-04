@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddCvTaskAnswerRequest;
 use App\Services\ApplicationService;
+use Exception;
 use Illuminate\Http\Request;
 
 class ApplicationController extends Controller
@@ -74,5 +75,19 @@ class ApplicationController extends Controller
     {
         $res = $this->applicationService->storeCvTaskAnswer($request);
         return response($res, 201);
+    }
+
+    public function getUsersByStep(string $stepId, Request $request)
+    {
+        try
+        {
+            $res = $this->applicationService->getUsersByStep($stepId, $request->user()->id);
+            return response($res, 200);
+        }
+        catch(Exception $e)
+        {
+            if($e instanceof Exception)
+                    return response(['message' => $e->getMessage()], 404);
+        }
     }
 }
