@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddCvTaskAnswerRequest;
+use App\Http\Requests\ManagmentUsersRequest;
 use App\Services\ApplicationService;
 use Exception;
 use Illuminate\Http\Request;
@@ -82,6 +83,20 @@ class ApplicationController extends Controller
         try
         {
             $res = $this->applicationService->getUsersByStep($stepId, $request->user()->id);
+            return response($res, 200);
+        }
+        catch(Exception $e)
+        {
+            if($e instanceof Exception)
+                    return response(['message' => $e->getMessage()], 404);
+        }
+    }
+
+    public function managementUsersInStep(ManagmentUsersRequest $request)
+    {
+        try
+        {
+            $res = $this->applicationService->managementUsersInStep($request, $request->user()->id);
             return response($res, 200);
         }
         catch(Exception $e)

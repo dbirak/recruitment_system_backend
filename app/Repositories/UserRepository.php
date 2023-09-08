@@ -49,4 +49,9 @@ class UserRepository {
 
         return $user;
     }
+
+    public function getUserById($userId)
+    {
+        return $this->user::where("id", $userId)->first();
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Http\Requests\AddAnnouncementRequest;
+use App\Http\Requests\ManagmentUsersRequest;
 use App\Models\Announcement;
 use App\Models\Step;
 
@@ -71,5 +72,17 @@ class StepRepository {
     public function getStepById(string $stepId)
     {
         return $this->step::where('id', $stepId)->first();
+    }
+
+    public function managmentUsers(ManagmentUsersRequest $request)
+    {
+        $updatedStep = $this->step::where('id', $request['id'])->first();
+
+        $updatedStep['applied_users'] = json_encode($request['applied_users']);
+        $updatedStep['rejected_users'] = json_encode($request['rejected_users']);
+        $updatedStep['accepted_users'] = json_encode($request['accepted_users']);
+        $updatedStep->save();  
+
+        return $updatedStep;
     }
 }
