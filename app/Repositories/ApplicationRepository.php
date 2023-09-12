@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Http\Requests\AddCvTaskAnswerRequest;
+use App\Http\Requests\UserApplicationInfoRequest;
 use App\Models\Application;
 use App\Models\CvAnswer;
 use App\Models\Step;
@@ -56,5 +57,10 @@ class ApplicationRepository {
         $actualStep->save();
 
         return $newApplication;
+    }
+
+    public function getUserApplication(UserApplicationInfoRequest $request)
+    {
+        return $this->application::where("announcement_id", $request['announcement_id'])->where("user_id", $request['user_id'])->where('step_id', $request['step_id'])->where('step_number', $request['step_number'])->first();
     }
 }

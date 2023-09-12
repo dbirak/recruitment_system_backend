@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Http\Requests\AddCvTaskAnswerRequest;
 use App\Http\Requests\AddFileTaskRequest;
 use App\Http\Requests\ManagmentUsersRequest;
+use App\Http\Requests\UserApplicationInfoRequest;
+use App\Http\Resources\ApplicationResource;
 use App\Http\Resources\FileTaskResource;
 use App\Http\Resources\StepResource;
 use App\Http\Resources\StepResourceForUser;
@@ -13,10 +15,12 @@ use App\Models\FileTask;
 use App\Repositories\AnnouncementRepository;
 use App\Repositories\ApplicationRepository;
 use App\Repositories\CompanyRepository;
+use App\Repositories\CvTaskRepository;
 use App\Repositories\FileTaskRepository;
 use App\Repositories\StepRepository;
 use App\Repositories\UserRepository;
 use Exception;
+use GuzzleHttp\Psr7\Request;
 
 class ApplicationService {
 
@@ -25,14 +29,16 @@ class ApplicationService {
     protected $companyRepository;
     protected $announcementRepository;
     protected $userRepository;
+    protected $cvTaskRepository;
 
-    public function __construct(ApplicationRepository $applicationRepository, StepRepository $stepRepository, CompanyRepository $companyRepository, AnnouncementRepository $announcementRepository, UserRepository $userRepository)
+    public function __construct(ApplicationRepository $applicationRepository, StepRepository $stepRepository, CompanyRepository $companyRepository, AnnouncementRepository $announcementRepository, UserRepository $userRepository, CvTaskRepository $cvTaskRepository)
     {
         $this->applicationRepository = $applicationRepository;
         $this->stepRepository = $stepRepository;
         $this->companyRepository = $companyRepository;
         $this->announcementRepository = $announcementRepository;
         $this->userRepository = $userRepository;
+        $this->cvTaskRepository = $cvTaskRepository;
     }
 
     public function storeCvTaskAnswer(AddCvTaskAnswerRequest $request)
@@ -112,5 +118,43 @@ class ApplicationService {
         $updatedStep = $this->stepRepository->managmentUsers($request);
 
         return $updatedStep;
+    }
+
+    public function getUserApplication(UserApplicationInfoRequest $request)
+    {
+        $step = $this->stepRepository->getStepById($request['step_id']);    
+        if(!isset($step)) throw new Exception("Etap nie isnieje!");
+    
+        $announcement = $this->announcementRepository->getAnnouncementByIdWhitoutExpiryDate($step['announcement_id']);
+
+        $company = $this->companyRepository->getCompanyByUserId($request->user()->id);
+        
+        if($announcement['company_id'] !== $company['id']) throw new Exception("Brak uprawnień do zasobu!");
+        if($step['is_active'] === null) throw new Exception("Etap nie został rozpoczęty!");
+
+        $application = $this->applicationRepository->getUserApplication($request);
+        $info = null;
+
+        if($application['task_id'] === 1)
+        {
+            //
+        }
+        else if($application['task_id'] === 2)
+        {
+            //
+        }
+        else if($application['task_id'] === 3)
+        {
+            //
+        }
+        else if($application['task_id'] === 4)
+        {
+            $cvAnswer = $this->cvTaskRepository->getCvAnswerById($application['cv_answer_id']);
+            $info = $cvAnswer;
+        }
+
+        $application['info'] = $info;
+
+        return new ApplicationResource($application);
     }
 }
