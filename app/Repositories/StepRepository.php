@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Http\Requests\AddAnnouncementRequest;
+use App\Http\Requests\BeginNewStepRequest;
 use App\Http\Requests\ManagmentUsersRequest;
 use App\Models\Announcement;
 use App\Models\Step;
@@ -84,5 +85,17 @@ class StepRepository {
         $updatedStep->save();  
 
         return $updatedStep;
+    }
+
+    public function beginNewStepInAnnouncement(BeginNewStepRequest $request, Step $step, $allSteps)
+    {
+        $allSteps[$step['step_number'] - 2]['is_active'] = false;
+        $allSteps[$step['step_number'] - 2]->save();
+
+        $step['expiry_date'] = $request['data_zakonczenia'];
+        $step['is_active'] = true;
+        $step->save();
+
+        return $step;
     }
 }

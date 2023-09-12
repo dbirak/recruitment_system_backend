@@ -77,7 +77,9 @@ class ApplicationService {
 
             foreach (array_merge($diff1, $diff2) as $userId)
             {
-                array_push($notAppliedUsers, new UserApplicationResource($this->userRepository->getUserById($userId)));
+                $user = $this->userRepository->getUserById($userId);
+                $user['have_answer'] = false;
+                array_push($notAppliedUsers, new UserApplicationResource($user));
             }
         }
 
@@ -86,6 +88,9 @@ class ApplicationService {
             foreach (json_decode($step[$column]) as $userId)
             {
                 $user = $this->userRepository->getUserById($userId);
+                $checkUserHaveAnswer = $this->applicationRepository->getApplicationById($userId, $announcement['id'], $stepId);
+
+                $user['have_answer'] = isset($checkUserHaveAnswer) ? true : false;
 
                 if($column === "applied_users") array_push($appliedUsers, new UserApplicationResource($user));
                 else if($column === "rejected_users") array_push($rejectedUsers, new UserApplicationResource($user));

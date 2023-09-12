@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Requests\AddAnnouncementRequest;
+use App\Http\Requests\BeginNewStepRequest;
 use App\Http\Requests\SearchAnnouncementRequest;
 use App\Http\Resources\AnnouncementCollection;
 use App\Http\Resources\AnnouncementResource;
@@ -148,8 +149,6 @@ class AnnouncementService {
         //with application
         else if(count($applicationUser) !== 0)
         {
-            //return new AnnouncementResource($res);
-
             $stepsArray = [];
             $isRejected = false;
 
@@ -261,5 +260,40 @@ class AnnouncementService {
         $res['steps'] = $stepsArray;
 
         return new AnnouncementResource($res);
+    }
+
+    public function beginNewStepInAnnouncement(BeginNewStepRequest $request, string $userId)
+    {
+        $step = $this->stepRepository->getStepById($request['step_id']);    
+        if(!isset($step)) throw new Exception("Etap nie isnieje!");
+    
+        $announcement = $this->announcementRepository->getAnnouncementByIdWhitoutExpiryDate($step['announcement_id']);
+
+        $company = $this->companyRepository->getCompanyByUserId($request->user()->id);
+
+        if($announcement['company_id'] !== $company['id']) throw new Exception("Brak uprawnień do zasobu!");
+        if($step['is_active'] !== null) throw new Exception("Etap został rozpoczęty lub jest już zakończony!");
+
+        $allSteps = $this->stepRepository->getStepsFromAnnouncement($request['announcement_id']);
+        if($allSteps[$step['step_number'] - 2]['is_active'] !== 1) throw new Exception("Nie można rozpocząć tego etapu!");
+
+        if(!empty(json_decode($allSteps[$step['step_number'] - 2]['applied_users']))) throw new Exception("Nie można rozpocząć nowego etapu, ponieważ w aktualnym etapie są osoby oczekujące na decyzję!");
+
+        if($request['data_zakonczenia'] <= Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d')) throw new Exception("Data zakończenia nie może być wcześniejsza niż dzisiejsza data!");
+
+        if($step['step_number'] > 2)
+        {
+            $previewStep = $allSteps[$step["step_number"] - 1];
+            $previewPreviewStep = $allSteps[$step["step_number"] - 2];
+
+            $diff1 = array_diff(json_decode($previewPreviewStep["applied_users"]), json_decode($previewStep['accepted_users']));
+            $diff2 = array_diff(json_decode($previewStep['accepted_users']), json_decode($previewPreviewStep["applied_users"]));
+
+            if(!empty(array_merge($diff1, $diff2))) throw new Exception("Nie można rozpocząć nowego etapu, ponieważ w aktualnym etapie są osoby oczekujące na decyzję!");
+        }
+
+        $updatedStep = $this->stepRepository->beginNewStepInAnnouncement($request, $step, $allSteps);
+
+        return $updatedStep;
     }
 }

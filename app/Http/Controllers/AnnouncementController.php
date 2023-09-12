@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddAnnouncementRequest;
+use App\Http\Requests\BeginNewStepRequest;
 use App\Http\Requests\SearchAnnouncementRequest;
 use App\Models\Announcement;
 use App\Services\AnnouncementService;
@@ -149,6 +150,20 @@ class AnnouncementController extends Controller
         {
             $res = $this->announcementService->getCompanyAnnouncementById($id, $request->user()->id);
             return response($res, 200);
+        }
+        catch(Exception $e)
+        {
+            if($e instanceof Exception)
+                    return response(['message' => $e->getMessage()], 404);
+        }
+    }
+
+    public function beginNewStep(BeginNewStepRequest $request)
+    {
+        try
+        {
+            $res = $this->announcementService->beginNewStepInAnnouncement($request, $request->user()->id);
+            return response($res, 201);
         }
         catch(Exception $e)
         {

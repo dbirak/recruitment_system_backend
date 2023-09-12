@@ -19,6 +19,7 @@ class UserApplicationResource extends JsonResource
             'name' => $this->name,
             'surname' => $this->surname,
             'email' => $this->email,
+            'have_answer' => $this->have_answer,
         ];
     }
 }
