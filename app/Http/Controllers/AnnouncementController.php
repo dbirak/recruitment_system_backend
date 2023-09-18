@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AddAnnouncementRequest;
 use App\Http\Requests\BeginNewStepRequest;
 use App\Http\Requests\SearchAnnouncementRequest;
+use App\Http\Requests\TaskUserInformationRequest;
 use App\Models\Announcement;
 use App\Services\AnnouncementService;
 use App\Services\FileTaskService;
@@ -164,6 +165,20 @@ class AnnouncementController extends Controller
         {
             $res = $this->announcementService->beginNewStepInAnnouncement($request, $request->user()->id);
             return response($res, 201);
+        }
+        catch(Exception $e)
+        {
+            if($e instanceof Exception)
+                    return response(['message' => $e->getMessage()], 404);
+        }
+    }
+
+    public function getTaskUserInfo(TaskUserInformationRequest $request)
+    {
+        try
+        {
+            $res = $this->announcementService->getTaskUserInfo($request, $request->user()->id);
+            return response($res, 200);
         }
         catch(Exception $e)
         {

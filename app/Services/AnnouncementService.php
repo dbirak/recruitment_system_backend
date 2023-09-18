@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Requests\AddAnnouncementRequest;
 use App\Http\Requests\BeginNewStepRequest;
 use App\Http\Requests\SearchAnnouncementRequest;
+use App\Http\Requests\TaskUserInformationRequest;
 use App\Http\Resources\AnnouncementCollection;
 use App\Http\Resources\AnnouncementResource;
 use App\Http\Resources\CategoryResource;
@@ -14,7 +15,9 @@ use App\Http\Resources\EarnTimeResource;
 use App\Http\Resources\FileTaskResource;
 use App\Http\Resources\OpenTaskResource;
 use App\Http\Resources\StepResourceForUser;
+use App\Http\Resources\TaskResource;
 use App\Http\Resources\TestTaskResource;
+use App\Http\Resources\UserTaskResource;
 use App\Http\Resources\WorkTimeResource;
 use App\Http\Resources\WorkTypeResource;
 use App\Models\Announcement;
@@ -243,7 +246,7 @@ class AnnouncementService {
             else if($step['is_active'] === 0) $applicationInfo = "see_answers";
             else if($step['is_active'] === 1) $applicationInfo = "manage_answers";
 
-            if($step['expiry_date'] === null && $steps[$step['step_number']-2] !== null && $steps[$step['step_number']-2]['expiry_date'] < Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d')) $canSetExpiryDate = true; 
+            if($step['expiry_date'] === null && $steps[$step['step_number']-2]['expiry_date'] !== null && $steps[$step['step_number']-2]['expiry_date'] < Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d')) $canSetExpiryDate = true; 
 
             $stats['applied_users_count'] = $appliedUsersCount; 
             $stats['rejected_users_count'] = $rejectedUsersCount; 
@@ -295,5 +298,37 @@ class AnnouncementService {
         $updatedStep = $this->stepRepository->beginNewStepInAnnouncement($request, $step, $allSteps);
 
         return $updatedStep;
+    }
+
+    public function getTaskUserInfo(TaskUserInformationRequest $request, string $userId)
+    {
+        $step = $this->stepRepository->getStepById($request['id']);
+        $allSteps = $this->stepRepository->getStepsFromAnnouncement($request['announcement_id']);
+
+        if(!in_array($userId, json_decode($allSteps[$step['step_number'] - 2]['accepted_users']))) throw new Exception("Nie masz uprawnień do zasoubu!");
+
+        $res['task'] = new TaskResource($this->announcementRepository->getTaskById($step['task_id']));
+
+        if($step['task_id'] === 1)
+        {
+            $res['task_info'] = $this->testTaskRepository->getUserTestTaskById($step['test_task_id'])[0];
+            $res['task_info']['questions_count'] = $this->testTaskRepository->getCountQuesitionFromTest($step['test_task_id']);
+
+            $res['task_info'] = new TestTaskResource($res['task_info']);
+        }
+        if($step['task_id'] === 2)
+        {
+            $res['task_info'] = $this->openTaskRepository->getOpenTaskById($step['open_task_id'])[0];
+
+            $res['task_info'] = new OpenTaskResource($res['task_info']);
+        }
+        if($step['task_id'] === 3)
+        {
+            $res['task_info'] = $this->fileTaskRepository->getFileTaskById($step['file_task_id'])[0];
+
+            $res['task_info'] = new FileTaskResource($res['task_info']);
+        }
+
+        return $res;
     }
 }

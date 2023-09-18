@@ -8,6 +8,7 @@ use App\Http\Resources\AnnouncementCollection;
 use App\Models\Announcement;
 use App\Models\Company;
 use App\Models\Step;
+use App\Models\Task;
 use Carbon\Carbon;
 
 class AnnouncementRepository {
@@ -15,12 +16,14 @@ class AnnouncementRepository {
     protected $announcement;
     protected $step;
     protected $company;
+    protected $task;
 
-    public function __construct(Announcement $announcement, Step $step, Company $company)
+    public function __construct(Announcement $announcement, Step $step, Company $company, Task $task)
     {
         $this->announcement = $announcement;
         $this->step = $step;
         $this->company = $company;
+        $this->task = $task;
     }
 
     public function createAnnouncement(AddAnnouncementRequest $request, string $companyId)
@@ -124,5 +127,15 @@ class AnnouncementRepository {
     {
         $company = $this->company::where('user_id', $userId)->first();
         return $this->announcement::where('company_id', $company['id'])->paginate(20);
+    }
+
+    public function getCompanyAnnouncementById(string $id)
+    {
+        return $this->announcement::where("id", $id)->first();
+    }
+
+    public function getTaskById(string $id)
+    {
+        return $this->task::where("id", $id)->first();
     }
 }

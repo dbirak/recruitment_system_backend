@@ -62,4 +62,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(FileTask::class);
     }
+
+    public function submissionLock()
+    {
+        return $this->hasMany(SubmissionLock::class);
+    }
 }

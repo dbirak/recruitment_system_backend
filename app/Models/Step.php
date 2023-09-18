@@ -40,4 +40,9 @@ class Step extends Model
     {
         return $this->hasMany(Application::class);
     }
+
+    public function submissionLock()
+    {
+        return $this->hasMany(SubmissionLock::class);
+    }
 }
