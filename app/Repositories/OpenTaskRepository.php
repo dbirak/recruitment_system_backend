@@ -3,15 +3,19 @@
 namespace App\Repositories;
 
 use App\Http\Requests\AddOpenTaskRequest;
+use App\Http\Requests\TaskUserAnswerRequest;
+use App\Models\OpenAnswer;
 use App\Models\OpenTask;
 
 class OpenTaskRepository {
 
     protected $openTask;
+    protected $openAnswer;
 
-    public function __construct(OpenTask $openTask)
+    public function __construct(OpenTask $openTask, OpenAnswer $openAnswer)
     {
         $this->openTask = $openTask;
+        $this->openAnswer = $openAnswer;
     }
 
     public function createOpenTask(AddOpenTaskRequest $request)
@@ -39,5 +43,14 @@ class OpenTaskRepository {
         $openTask = $this->openTask::where('id', $openTaskId)->first();
         
         return $openTask['user_id'] == $userId ? true : false ;
+    }
+
+    public function createOpenAnswer(TaskUserAnswerRequest $request)
+    {
+        $newOpenAnswer = new OpenAnswer();
+        $newOpenAnswer->answer = $request['answer'];
+        $newOpenAnswer->save();
+
+        return $newOpenAnswer;
     }
 }

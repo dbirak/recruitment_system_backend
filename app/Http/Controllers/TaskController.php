@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TaskUserAnswerRequest;
 use App\Http\Requests\TaskUserInformationRequest;
 use App\Services\TaskService;
 use Exception;
@@ -85,7 +86,7 @@ class TaskController extends Controller
         }
     }
 
-    public function storeTaskAnswer(Request $request)
+    public function storeTaskAnswer(TaskUserAnswerRequest $request)
     {
         try
         {

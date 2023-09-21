@@ -7,6 +7,7 @@ use App\Http\Requests\BeginNewStepRequest;
 use App\Http\Requests\ManagmentUsersRequest;
 use App\Models\Announcement;
 use App\Models\Step;
+use Ramsey\Uuid\Type\Integer;
 
 class StepRepository {
 
@@ -97,5 +98,14 @@ class StepRepository {
         $step->save();
 
         return $step;
+    }
+
+    public function addNewAppliedToStep(int $stepId, string $userId)
+    {
+        $updatedStep = $this->step::where("id", $stepId)->first();
+        $appliedUsers = json_decode($updatedStep['applied_users']);
+        array_push($appliedUsers, intval($userId));
+        $updatedStep['applied_users'] = json_encode($appliedUsers);
+        $updatedStep->save();
     }
 }

@@ -3,15 +3,19 @@
 namespace App\Repositories;
 
 use App\Http\Requests\AddFileTaskRequest;
+use App\Http\Requests\TaskUserAnswerRequest;
+use App\Models\FileAnswer;
 use App\Models\FileTask;
 
 class FileTaskRepository {
 
     protected $fileTask;
+    protected $fileAnswer;
 
-    public function __construct(FileTask $fileTask)
+    public function __construct(FileTask $fileTask, FileAnswer $fileAnswer)
     {
         $this->fileTask = $fileTask;
+        $this->fileAnswer = $fileAnswer;
     }
 
     public function createFileTask(AddFileTaskRequest $request)
@@ -39,5 +43,18 @@ class FileTaskRepository {
         $testTask = $this->fileTask::where('id', $fileTaskId)->first();
         
         return $testTask['user_id'] == $userId ? true : false ;
+    }
+
+    public function createFileAnswer(TaskUserAnswerRequest $request)
+    {
+        $file = $request->file('answer');
+        $path = $file->store('public/fileAnswer');
+
+        $newFileAnswer = new FileAnswer();
+        $newFileAnswer->original_name = $file->getClientOriginalName();
+        $newFileAnswer->storage_name = $file->hashName();
+        $newFileAnswer->save();
+
+        return $newFileAnswer;
     }
 }

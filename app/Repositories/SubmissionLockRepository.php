@@ -25,4 +25,9 @@ class SubmissionLockRepository {
     {
         return $this->submissionLock::where('step_id', $stepId)->where('user_id', $userId)->first();
     }
+
+    public function removeSubmissionLockById(int $id)
+    {
+        $submissionLock = $this->submissionLock::where('id', $id)->delete();
+    }
 }

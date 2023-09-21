@@ -63,4 +63,31 @@ class ApplicationRepository {
     {
         return $this->application::where("announcement_id", $request['announcement_id'])->where("user_id", $request['user_id'])->where('step_id', $request['step_id'])->where('step_number', $request['step_number'])->first();
     }
+
+    public function createApplication($step, $userId, $taskAnswer)
+    {
+        $newApplication = new Application();
+        $newApplication->announcement_id = $step['announcement_id'];
+        $newApplication->user_id = $userId;
+        $newApplication->step_id = $step['id'];
+        $newApplication->step_number = $step['step_number'];
+        $newApplication->task_id = $step['task_id'];
+
+        if($step['task_id'] === 1)
+        {
+            $newApplication['test_answer_id'] = $taskAnswer['id'];
+        }
+        if($step['task_id'] === 2)
+        {
+            $newApplication['open_answer_id'] = $taskAnswer['id'];
+        }
+        if($step['task_id'] === 3)
+        {
+            $newApplication['file_answer_id'] = $taskAnswer['id'];
+        }
+
+        $newApplication->save();
+
+        return $newApplication;
+    }
 }

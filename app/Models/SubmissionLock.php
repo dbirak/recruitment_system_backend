@@ -9,7 +9,7 @@ class SubmissionLock extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'step_id'];
+    protected $fillable = ['user_id', 'step_id', 'created_at'];
 
     public function step()
     {

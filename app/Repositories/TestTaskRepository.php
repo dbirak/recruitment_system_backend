@@ -2,9 +2,12 @@
 
 namespace App\Repositories;
 
+use App\Http\Requests\TaskUserAnswerRequest;
 use App\Models\Answer;
 use App\Models\AnswerQuestion;
 use App\Models\Question;
+use App\Models\TestAnswer;
+use App\Models\TestAnswerAnswer;
 use App\Models\TestTask;
 use Illuminate\Support\Facades\DB;
 
@@ -13,10 +16,15 @@ class TestTaskRepository {
     protected $testTask;
     protected $answerQuestion;
 
-    public function __construct(TestTask $testTask, AnswerQuestion $answerQuestion)
+    protected $testAnswer;
+    protected $testAnswerAnswer;
+
+    public function __construct(TestTask $testTask, AnswerQuestion $answerQuestion, TestAnswer $testAnswer, TestAnswerAnswer $testAnswerAnswer)
     {
         $this->testTask = $testTask;
         $this->answerQuestion = $answerQuestion;
+        $this->testAnswer = $testAnswer;
+        $this->testAnswerAnswer = $testAnswerAnswer;
     }
 
     public function createTest($request)
@@ -79,5 +87,26 @@ class TestTaskRepository {
         $test = $this->testTask::where('id', $testId)->first();
         
         return $test['user_id'] == $userId ? true : false ; 
+    }
+
+    public function createTestAnswer(TaskUserAnswerRequest $request)
+    {
+        $newTestAnswer = new TestAnswer();
+        $newTestAnswer->save();
+
+        foreach ($request['answer'] as $question)
+        {
+            foreach ($question['odpowiedzi'] as $answer)
+            {
+                $newAnswerAnswer = new TestAnswerAnswer();
+                $newAnswerAnswer->test_answer_id = $newTestAnswer['id'];
+                $newAnswerAnswer->question_id = $question['id'];
+                $newAnswerAnswer->answer_id = $answer['id'];
+                $newAnswerAnswer->is_checked = $answer['is_markered'];
+                $newAnswerAnswer->save();
+            }
+        }
+
+        return $newTestAnswer;
     }
 }
