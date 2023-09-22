@@ -57,4 +57,9 @@ class FileTaskRepository {
 
         return $newFileAnswer;
     }
+
+    public function getFileAnswerById(string $id)
+    {
+        return $this->fileAnswer::where('id', $id)->first();
+    }
 }

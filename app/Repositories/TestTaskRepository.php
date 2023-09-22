@@ -15,14 +15,19 @@ class TestTaskRepository {
 
     protected $testTask;
     protected $answerQuestion;
+    protected $answer;
+    protected $question;
 
     protected $testAnswer;
     protected $testAnswerAnswer;
 
-    public function __construct(TestTask $testTask, AnswerQuestion $answerQuestion, TestAnswer $testAnswer, TestAnswerAnswer $testAnswerAnswer)
+    public function __construct(TestTask $testTask, AnswerQuestion $answerQuestion, TestAnswer $testAnswer, TestAnswerAnswer $testAnswerAnswer, Answer $answer, Question $question)
     {
         $this->testTask = $testTask;
         $this->answerQuestion = $answerQuestion;
+        $this->answer = $answer;
+        $this->question = $question;
+
         $this->testAnswer = $testAnswer;
         $this->testAnswerAnswer = $testAnswerAnswer;
     }
@@ -108,5 +113,20 @@ class TestTaskRepository {
         }
 
         return $newTestAnswer;
+    }
+
+    public function getTestAnswerById(int $testAnswerId)
+    {
+        return $this->testAnswerAnswer::where('test_answer_id', $testAnswerId)->orderBy('question_id', 'asc')->get();
+    }
+
+    public function getAnswerById(string $id)
+    {   
+        return $this->answer::where('id', $id)->first();
+    }
+
+    public function getQuestionById(string $id)
+    {
+        return $this->question::where('id', $id)->first();
     }
 }

@@ -53,4 +53,9 @@ class OpenTaskRepository {
 
         return $newOpenAnswer;
     }
+
+    public function getOpenAnswerById(string $id)
+    {
+        return $this->openAnswer::where('id', $id)->first();
+    }
 }

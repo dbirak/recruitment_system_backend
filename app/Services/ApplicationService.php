@@ -17,7 +17,9 @@ use App\Repositories\ApplicationRepository;
 use App\Repositories\CompanyRepository;
 use App\Repositories\CvTaskRepository;
 use App\Repositories\FileTaskRepository;
+use App\Repositories\OpenTaskRepository;
 use App\Repositories\StepRepository;
+use App\Repositories\TestTaskRepository;
 use App\Repositories\UserRepository;
 use Exception;
 use GuzzleHttp\Psr7\Request;
@@ -29,16 +31,24 @@ class ApplicationService {
     protected $companyRepository;
     protected $announcementRepository;
     protected $userRepository;
-    protected $cvTaskRepository;
 
-    public function __construct(ApplicationRepository $applicationRepository, StepRepository $stepRepository, CompanyRepository $companyRepository, AnnouncementRepository $announcementRepository, UserRepository $userRepository, CvTaskRepository $cvTaskRepository)
+    protected $cvTaskRepository;
+    protected $testTaskRepository;
+    protected $openTaskRepository;
+    protected $fileTaskRepository;
+
+    public function __construct(ApplicationRepository $applicationRepository, StepRepository $stepRepository, CompanyRepository $companyRepository, AnnouncementRepository $announcementRepository, UserRepository $userRepository, CvTaskRepository $cvTaskRepository, TestTaskRepository $testTaskRepository, OpenTaskRepository $openTaskRepository, FileTaskRepository $fileTaskRepository)
     {
         $this->applicationRepository = $applicationRepository;
         $this->stepRepository = $stepRepository;
         $this->companyRepository = $companyRepository;
         $this->announcementRepository = $announcementRepository;
         $this->userRepository = $userRepository;
+
         $this->cvTaskRepository = $cvTaskRepository;
+        $this->testTaskRepository = $testTaskRepository;
+        $this->openTaskRepository = $openTaskRepository;
+        $this->fileTaskRepository = $fileTaskRepository;
     }
 
     public function storeCvTaskAnswer(AddCvTaskAnswerRequest $request)
@@ -74,8 +84,11 @@ class ApplicationService {
 
             $diff1 = array_diff(json_decode($step["applied_users"]), json_decode($previewStep['accepted_users']));
             $diff2 = array_diff(json_decode($previewStep['accepted_users']), json_decode($step["applied_users"]));
+            $mergeArray = array_merge($diff1, $diff2);
 
-            foreach (array_merge($diff1, $diff2) as $userId)
+            $mergeArray = array_diff($mergeArray, json_decode($step['accepted_users']), json_decode($step['rejected_users']));
+
+            foreach ($mergeArray as $userId)
             {
                 $user = $this->userRepository->getUserById($userId);
                 $user['have_answer'] = false;
@@ -142,20 +155,66 @@ class ApplicationService {
 
         if($application['task_id'] === 1)
         {
-            //
+            $testAnswers = $this->testTaskRepository->getTestAnswerById($application['test_answer_id']);
+
+            $info = [];
+           
+            foreach ($testAnswers as $item) {
+                $found = false;
+                foreach ($info as &$resultItem) {
+                    if ($resultItem['question_id'] === $item['question_id']) {
+                        $resultItem['answers'][] = [
+                            'answer' => $this->testTaskRepository->getAnswerById($item['answer_id'])['answer'],
+                            'is_checked' => $item['is_checked'] === 1 ? true : false,
+                            'is_correct' => $this->testTaskRepository->getAnswerById($item['answer_id'])['is_correct'] === 1 ? true : false
+                        ];
+                        $found = true;
+                        break;
+                    }
+                }
+                
+                if (!$found) {
+                    $info[] = [
+                        'question_id' => $item['question_id'],
+                        'question' => $this->testTaskRepository->getQuestionById($item['question_id'])['question'],
+                        'answers' => [
+                            [
+                                'answer' => $this->testTaskRepository->getAnswerById($item['answer_id'])['answer'],
+                                'is_checked' => $item['is_checked'] === 1 ? true : false,
+                                'is_correct' => $this->testTaskRepository->getAnswerById($item['answer_id'])['is_correct'] === 1 ? true : false
+                            ]
+                        ]
+                    ];
+                }
+            }
+
+            foreach ($info as &$item)
+            {
+                $correctAnswer = true;
+
+                foreach ($item['answers'] as $answer)
+                {
+                    if($answer['is_checked'] !== $answer['is_correct'])
+                    {
+                        $correctAnswer = false;
+                        break;
+                    }
+                }
+
+                $item['correct_answer'] = $correctAnswer;
+            }
         }
         else if($application['task_id'] === 2)
         {
-            //
+            $info = $this->openTaskRepository->getOpenAnswerById($application['open_answer_id']);
         }
         else if($application['task_id'] === 3)
         {
-            //
+            $info = $this->fileTaskRepository->getFileAnswerById($application['file_answer_id']);
         }
         else if($application['task_id'] === 4)
         {
-            $cvAnswer = $this->cvTaskRepository->getCvAnswerById($application['cv_answer_id']);
-            $info = $cvAnswer;
+            $info = $this->cvTaskRepository->getCvAnswerById($application['cv_answer_id']);
         }
 
         $application['info'] = $info;
