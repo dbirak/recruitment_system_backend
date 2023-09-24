@@ -33,6 +33,7 @@ use App\Repositories\EarnTimeRepository;
 use App\Repositories\FileTaskRepository;
 use App\Repositories\OpenTaskRepository;
 use App\Repositories\StepRepository;
+use App\Repositories\SubmissionLockRepository;
 use App\Repositories\TestTaskRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\WorkTimeRepository;
@@ -49,6 +50,7 @@ class AnnouncementService {
     protected $companyRepository;
     protected $stepRepository;
     protected $appliactionRepository;
+    protected $submissionLockRepository;
 
     protected $categoryRepository;
     protected $contractRepository;
@@ -60,12 +62,13 @@ class AnnouncementService {
     protected $openTaskRepository;
     protected $fileTaskRepository;
 
-    public function __construct(AnnouncementRepository $announcementRepository, CompanyRepository $companyRepository, StepRepository $stepRepository, CategoryRepository $categoryRepository, ContractRepository $contractRepository, WorkTimeRepository $workTimeRepository, WorkTypeRepository $workTypeRepository, EarnTimeRepository $earnTimeRepository, TestTaskRepository $testTaskRepository, OpenTaskRepository $openTaskRepository, FileTaskRepository $fileTaskRepository, ApplicationRepository $appliactionRepository)
+    public function __construct(AnnouncementRepository $announcementRepository, CompanyRepository $companyRepository, StepRepository $stepRepository, CategoryRepository $categoryRepository, ContractRepository $contractRepository, WorkTimeRepository $workTimeRepository, WorkTypeRepository $workTypeRepository, EarnTimeRepository $earnTimeRepository, TestTaskRepository $testTaskRepository, OpenTaskRepository $openTaskRepository, FileTaskRepository $fileTaskRepository, ApplicationRepository $appliactionRepository, SubmissionLockRepository $submissionLockRepository)
     {
         $this->announcementRepository = $announcementRepository;
         $this->companyRepository = $companyRepository;
         $this->stepRepository = $stepRepository;
         $this->appliactionRepository = $appliactionRepository;
+        $this->submissionLockRepository = $submissionLockRepository;
 
         $this->categoryRepository = $categoryRepository;
         $this->contractRepository = $contractRepository;
@@ -164,9 +167,10 @@ class AnnouncementService {
                 $statusInfo = in_array($userId, json_decode($step['applied_users'])) ? "applied_user" : (in_array($userId, json_decode($step['rejected_users'])) ? "rejected_user" : (in_array($userId, json_decode($step['accepted_users'])) ? "accepted_user" : null));
 
                 $application = $this->appliactionRepository->getApplicationById($userId, $announcementId, $step['id']);
+                if($step['is_active'] === 1) $checkSubmissionLock = $this->submissionLockRepository->getSubmissionLock($step['id'], $userId);
 
                 if($isRejected) $answerInfo = null;
-                else if($application === null && $isActualStep === false) $answerInfo = "not_sended";
+                else if(($application === null && $isActualStep === false) || isset($checkSubmissionLock)) $answerInfo = "not_sended";
                 else if($application !== null && $isActualStep === false) $answerInfo = "sended";
                 else if($application === null && $isActualStep === null) $answerInfo = null;
                 else if($application !== null && $isActualStep === true) $answerInfo = "sended";

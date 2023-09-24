@@ -82,6 +82,8 @@ class TaskService {
 
     public function storeTaskAnswer(TaskUserAnswerRequest $request, string $userId)
     {
+        $newApplication = true;
+
         $step = $this->stepRepository->getStepById($request['id']);
         $allSteps = $this->stepRepository->getStepsFromAnnouncement($request['announcement_id']);
         
@@ -128,15 +130,17 @@ class TaskService {
         {
             $taskAnswer = $this->openTaskRepository->createOpenAnswer($request);
         }
-        if($step['task_id'] === 3)
+        if($step['task_id'] === 3 && $request['answer'] !== "null")
         {
             $taskAnswer = $this->fileTaskRepository->createFileAnswer($request);
         }
-
-        $newApplication = $this->applicationRepository->createApplication($step, $userId, $taskAnswer);
-
-        $this->stepRepository->addNewAppliedToStep($step['id'], $userId);
-        $this->submissionLockRepository->removeSubmissionLockById($checkSubmissionLock['id']);
+        
+        if($request['answer'] !== "null") 
+        {
+            $newApplication = $this->applicationRepository->createApplication($step, $userId, $taskAnswer);
+            $this->submissionLockRepository->removeSubmissionLockById($checkSubmissionLock['id']);
+            $this->stepRepository->addNewAppliedToStep($step['id'], $userId);
+        }
 
         return $newApplication;
     }
