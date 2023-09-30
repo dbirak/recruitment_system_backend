@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Requests\AddAnnouncementRequest;
 use App\Http\Requests\BeginNewStepRequest;
+use App\Http\Requests\CloseAnnouncementRequest;
 use App\Http\Requests\SearchAnnouncementRequest;
 use App\Http\Requests\TaskUserInformationRequest;
 use App\Http\Resources\AnnouncementCollection;
@@ -17,6 +18,8 @@ use App\Http\Resources\OpenTaskResource;
 use App\Http\Resources\StepResourceForUser;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\TestTaskResource;
+use App\Http\Resources\UserApplicationResource;
+use App\Http\Resources\UserResource;
 use App\Http\Resources\UserTaskResource;
 use App\Http\Resources\WorkTimeResource;
 use App\Http\Resources\WorkTypeResource;
@@ -51,6 +54,7 @@ class AnnouncementService {
     protected $stepRepository;
     protected $appliactionRepository;
     protected $submissionLockRepository;
+    protected $userRepository;
 
     protected $categoryRepository;
     protected $contractRepository;
@@ -62,13 +66,14 @@ class AnnouncementService {
     protected $openTaskRepository;
     protected $fileTaskRepository;
 
-    public function __construct(AnnouncementRepository $announcementRepository, CompanyRepository $companyRepository, StepRepository $stepRepository, CategoryRepository $categoryRepository, ContractRepository $contractRepository, WorkTimeRepository $workTimeRepository, WorkTypeRepository $workTypeRepository, EarnTimeRepository $earnTimeRepository, TestTaskRepository $testTaskRepository, OpenTaskRepository $openTaskRepository, FileTaskRepository $fileTaskRepository, ApplicationRepository $appliactionRepository, SubmissionLockRepository $submissionLockRepository)
+    public function __construct(AnnouncementRepository $announcementRepository, CompanyRepository $companyRepository, StepRepository $stepRepository, CategoryRepository $categoryRepository, ContractRepository $contractRepository, WorkTimeRepository $workTimeRepository, WorkTypeRepository $workTypeRepository, EarnTimeRepository $earnTimeRepository, TestTaskRepository $testTaskRepository, OpenTaskRepository $openTaskRepository, FileTaskRepository $fileTaskRepository, ApplicationRepository $appliactionRepository, SubmissionLockRepository $submissionLockRepository, UserRepository $userRepository)
     {
         $this->announcementRepository = $announcementRepository;
         $this->companyRepository = $companyRepository;
         $this->stepRepository = $stepRepository;
         $this->appliactionRepository = $appliactionRepository;
         $this->submissionLockRepository = $submissionLockRepository;
+        $this->userRepository = $userRepository;
 
         $this->categoryRepository = $categoryRepository;
         $this->contractRepository = $contractRepository;
@@ -189,7 +194,7 @@ class AnnouncementService {
                 }
 
                 $stepInfo['answer_info'] = $answerInfo;
-                $stepInfo['status_info'] = $statusInfo;
+                $stepInfo['status_info'] = $answerInfo === "not_sended" && $statusInfo === null ? "applied_user" : $statusInfo;
                 $step['info'] = $stepInfo;
 
                 $step['expiry_date'] = $isRejected ? null : $step['expiry_date'];
@@ -200,6 +205,8 @@ class AnnouncementService {
             }
             
             $res['steps'] = $stepsArray;
+
+            if($stepsArray[count($stepsArray) - 1]['info']['status_info'] === "accepted_user") $res['last_step_info'] = "winner";
 
             return new AnnouncementResource($res);
         }
@@ -242,8 +249,8 @@ class AnnouncementService {
             $acceptedUsersCount = count(json_decode($step['accepted_users']));
 
             if($step['task_id'] ===  1) $taskInfo = $this->testTaskRepository->getUserTestTaskById($step['test_task_id']); 
-            else if($step['task_id'] ===  2) $taskInfo = $this->openTaskRepository->getOpenTaskById($step['open_task_id'])[0]; 
-            else if($step['task_id'] ===  3) $taskInfo = $this->fileTaskRepository->getFileTaskById($step['file_task_id'])[0]; 
+            else if($step['task_id'] ===  2) $taskInfo = new OpenTaskResource($this->openTaskRepository->getOpenTaskById($step['open_task_id'])[0]); 
+            else if($step['task_id'] ===  3) $taskInfo = new FileTaskResource($this->fileTaskRepository->getFileTaskById($step['file_task_id'])[0]); 
             else if($step['task_id'] ===  4) $taskInfo = null;
             
             if($step['is_active'] === null) $applicationInfo = null;    
@@ -265,6 +272,27 @@ class AnnouncementService {
         }
 
         $res['steps'] = $stepsArray;
+
+        $last_step = $steps[count($steps) - 1];
+
+        $last_step_info['can_close_announcement'] = false;
+        $last_step_info['winners_users'] = null;
+
+        if($last_step['expiry_date'] < Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d') && $last_step['is_active'] === 1)
+        {
+            $last_step_info['can_close_announcement'] = true;
+        }
+        if($last_step['is_active'] === 0)
+        {
+            $last_step_info['winners_users'] = [];
+
+            foreach (json_decode($last_step['accepted_users']) as $userId)
+            {
+                array_push($last_step_info['winners_users'], new UserApplicationResource($this->userRepository->getUserById($userId)));
+            }
+        }
+
+        $res['last_step_info'] = $last_step_info;
 
         return new AnnouncementResource($res);
     }
@@ -290,13 +318,13 @@ class AnnouncementService {
 
         if($step['step_number'] > 2)
         {
-            $previewStep = $allSteps[$step["step_number"] - 1];
-            $previewPreviewStep = $allSteps[$step["step_number"] - 2];
+            $previewStep = $allSteps[$step["step_number"] - 2];
+            $previewPreviewStep = $allSteps[$step["step_number"] - 3];
 
-            $diff1 = array_diff(json_decode($previewPreviewStep["applied_users"]), json_decode($previewStep['accepted_users']));
-            $diff2 = array_diff(json_decode($previewStep['accepted_users']), json_decode($previewPreviewStep["applied_users"]));
+            $diff = array_diff(json_decode($previewPreviewStep["accepted_users"]), json_decode($previewStep['applied_users']));
 
-            if(!empty(array_merge($diff1, $diff2))) throw new Exception("Nie można rozpocząć nowego etapu, ponieważ w aktualnym etapie są osoby oczekujące na decyzję!");
+            if(!empty(array_diff($diff, json_decode($previewStep['rejected_users']), json_decode($previewStep['accepted_users'])))) throw new Exception("Nie można rozpocząć nowego etapu, ponieważ w aktualnym etapie są osoby oczekujące na decyzję!");
+
         }
 
         $updatedStep = $this->stepRepository->beginNewStepInAnnouncement($request, $step, $allSteps);
@@ -334,5 +362,31 @@ class AnnouncementService {
         }
 
         return $res;
+    }
+
+    public function closeAnnouncement(CloseAnnouncementRequest $request, string $userId)
+    {
+        $step = $this->stepRepository->getStepById($request['step_id']);
+        $allSteps = $this->stepRepository->getStepsFromAnnouncement($request['announcement_id']);
+        $announcement = $this->announcementRepository->getAnnouncementByIdWhitoutExpiryDate($step['announcement_id']);
+
+        $company = $this->companyRepository->getCompanyByUserId($userId);
+
+        if($announcement['company_id'] !== $company['id']) throw new Exception("Brak uprawnień do zasobu!");
+        if($step['is_active'] !== 1) throw new Exception("Nie można zakończyć ogłoszenia, ponieważ ostatni etap rekrutacji nie został rozpoczęty!");
+        if($step['id'] !== $allSteps[count($allSteps) - 1]['id']) throw new Exception("Nie można zakończyć ogłoszenia, ponieważ ostatni etap rekrutacji nie został rozpoczęty!");
+
+        if(!empty(json_decode($step['applied_users']))) throw new Exception("Nie można rozpocząć nowego etapu, ponieważ w aktualnym etapie są osoby oczekujące na decyzję!");
+        
+        if($step['step_number'] > 1)
+        {
+            $previewStep = $allSteps[$step["step_number"] - 2];
+
+            $diff = array_diff(json_decode($previewStep['accepted_users']), json_decode($step["applied_users"]));
+
+            if(!empty(array_diff($diff, json_decode($step['rejected_users']), json_decode($step['accepted_users'])))) throw new Exception("Nie można rozpocząć nowego etapu, ponieważ w aktualnym etapie są osoby oczekujące na decyzję!");
+        }
+
+        return $this->announcementRepository->closeAnnouncementByLastStepId($request['step_id']);
     }
 }

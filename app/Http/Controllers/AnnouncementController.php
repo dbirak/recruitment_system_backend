@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AddAnnouncementRequest;
 use App\Http\Requests\BeginNewStepRequest;
+use App\Http\Requests\CloseAnnouncementRequest;
 use App\Http\Requests\SearchAnnouncementRequest;
 use App\Http\Requests\TaskUserInformationRequest;
 use App\Models\Announcement;
@@ -178,6 +179,20 @@ class AnnouncementController extends Controller
         try
         {
             $res = $this->announcementService->getTaskUserInfo($request, $request->user()->id);
+            return response($res, 200);
+        }
+        catch(Exception $e)
+        {
+            if($e instanceof Exception)
+                    return response(['message' => $e->getMessage()], 404);
+        }
+    }
+
+    public function closeAnnouncement(CloseAnnouncementRequest $request)
+    {
+        try
+        {
+            $res = $this->announcementService->closeAnnouncement($request, $request->user()->id);
             return response($res, 200);
         }
         catch(Exception $e)

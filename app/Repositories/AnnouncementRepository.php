@@ -138,4 +138,13 @@ class AnnouncementRepository {
     {
         return $this->task::where("id", $id)->first();
     }
+
+    public function closeAnnouncementByLastStepId(string $id)
+    {
+        $step = $this->step::where('id', $id)->first();
+        $step['is_active'] = 0;
+        $step->save();
+
+        return $step;
+    }
 }

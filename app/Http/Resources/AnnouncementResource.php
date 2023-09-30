@@ -37,6 +37,7 @@ class AnnouncementResource extends JsonResource
             'work_time' => new WorkTimeResource(WorkTime::findOrFail($this->work_time_id)),
             'work_type' => new WorkTypeResource(WorkType::findOrFail($this->work_type_id)),
             "steps" => $this->steps,
+            "last_step_info" => $this->last_step_info,
             'created_at' => $this->created_at,
         ];
     }

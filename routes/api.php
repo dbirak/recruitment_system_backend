@@ -50,12 +50,14 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::get('/company/announcement', [AnnouncementController::class, 'getCompanyAnnouncements']);
     Route::get('/company/announcement/{id}', [AnnouncementController::class, 'getCompanyAnnouncementById']);
     Route::post('/company/announcement/new-step', [AnnouncementController::class, 'beginNewStep']);
+    Route::post('/company/announcement/end', [AnnouncementController::class, 'closeAnnouncement']);
     
     Route::get('/company/application/{id}', [ApplicationController::class, 'getUsersByStep']);
     Route::post('/company/application/managment', [ApplicationController::class, 'managementUsersInStep']);
     Route::post('/company/application/task', [ApplicationController::class, 'getUserApplication']);
 
     Route::get('/company/answer/cv-task/{fileName}', [CvTaskController::class, 'getCvAnswer']);
+    Route::get('/company/answer/file-task/{fileName}', [FileTaskController::class, 'getFileAnswer']);
 });
 
 Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {

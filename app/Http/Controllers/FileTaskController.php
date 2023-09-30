@@ -83,4 +83,18 @@ class FileTaskController extends Controller
     {
         //
     }
+
+    public function getFileAnswer(string $fileName)
+    {
+        try
+        {
+            $res = $this->fileTaskService->showFileAnswer($fileName);
+            return $res;
+        }
+        catch(Exception $e)
+        {
+            if($e instanceof Exception)
+                    return response(['message' => $e->getMessage()], 404);
+        }
+    }
 }
