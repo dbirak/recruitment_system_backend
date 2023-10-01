@@ -167,8 +167,9 @@ class AnnouncementService {
             {
                 $isActualStep = $this->isActualStep($step['expiry_date']);
                 $answerInfo = null;
-
+                $checkSubmissionLock = null;
                 $application = null;
+
                 $statusInfo = in_array($userId, json_decode($step['applied_users'])) ? "applied_user" : (in_array($userId, json_decode($step['rejected_users'])) ? "rejected_user" : (in_array($userId, json_decode($step['accepted_users'])) ? "accepted_user" : null));
 
                 $application = $this->appliactionRepository->getApplicationById($userId, $announcementId, $step['id']);
@@ -223,7 +224,37 @@ class AnnouncementService {
 
     public function getCompanyAnnouncements(string $userId)
     {
-        return new AnnouncementCollection($this->announcementRepository->getCompanyAnnouncements($userId));
+        $announcements = $this->announcementRepository->getCompanyAnnouncements($userId);
+
+        foreach ($announcements as $announcement)
+        {
+            $steps = $this->stepRepository->getStepsFromAnnouncement($announcement['id']);
+            foreach ($steps as $step)
+            {
+                $res['actual_step_number'] = null;
+                $res['expiry_date_actual_step'] = null;
+                $res['applied_user_count_in_actual_step'] = null;
+                $res['announcement_status'] = "expired";
+
+                if($step['is_active'] === 1) 
+                {
+                    $res['actual_step_number'] = $step['step_number']." / ".count($steps);
+                    $res['expiry_date_actual_step'] = $step['expiry_date'];
+                    $res['applied_user_count_in_actual_step'] = count(json_decode($step['applied_users']));
+                    
+                    $res['announcement_status'] = "in_recruitment";
+                    if($step['step_number'] === 1 && Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d') < $step['expiry_date']) $res['announcement_status'] = "active";
+
+                    $announcement['steps'] = $res;
+                    break;
+                }
+                
+                $announcement['steps'] = $res;
+            } 
+        }
+
+
+        return new AnnouncementCollection($announcements);
     }
 
     public function getCompanyAnnouncementById(string $id, string $userId)
@@ -376,7 +407,7 @@ class AnnouncementService {
         if($step['is_active'] !== 1) throw new Exception("Nie można zakończyć ogłoszenia, ponieważ ostatni etap rekrutacji nie został rozpoczęty!");
         if($step['id'] !== $allSteps[count($allSteps) - 1]['id']) throw new Exception("Nie można zakończyć ogłoszenia, ponieważ ostatni etap rekrutacji nie został rozpoczęty!");
 
-        if(!empty(json_decode($step['applied_users']))) throw new Exception("Nie można rozpocząć nowego etapu, ponieważ w aktualnym etapie są osoby oczekujące na decyzję!");
+        if(!empty(json_decode($step['applied_users']))) throw new Exception("Nie można zakończyć ogłoszenia, ponieważ w aktualnym etapie są osoby oczekujące na decyzję!");
         
         if($step['step_number'] > 1)
         {
@@ -384,7 +415,7 @@ class AnnouncementService {
 
             $diff = array_diff(json_decode($previewStep['accepted_users']), json_decode($step["applied_users"]));
 
-            if(!empty(array_diff($diff, json_decode($step['rejected_users']), json_decode($step['accepted_users'])))) throw new Exception("Nie można rozpocząć nowego etapu, ponieważ w aktualnym etapie są osoby oczekujące na decyzję!");
+            if(!empty(array_diff($diff, json_decode($step['rejected_users']), json_decode($step['accepted_users'])))) throw new Exception("Nie można zakończyć ogłoszenia, ponieważ w aktualnym etapie są osoby oczekujące na decyzję!");
         }
 
         return $this->announcementRepository->closeAnnouncementByLastStepId($request['step_id']);

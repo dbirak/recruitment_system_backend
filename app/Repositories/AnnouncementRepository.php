@@ -126,7 +126,7 @@ class AnnouncementRepository {
     public function getCompanyAnnouncements(string $userId)
     {
         $company = $this->company::where('user_id', $userId)->first();
-        return $this->announcement::where('company_id', $company['id'])->paginate(20);
+        return $this->announcement::where('company_id', $company['id'])->orderby('id', 'desc')->paginate(20);
     }
 
     public function getCompanyAnnouncementById(string $id)
