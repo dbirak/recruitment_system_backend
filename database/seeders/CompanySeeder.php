@@ -26,8 +26,13 @@ class CompanySeeder extends Seeder
                     'city' => 'Rzeszów',
                     'krs' => "1234567890",
                     'regon' => "123456789",
-                    'nip' => "123-456-78-90",
+                    'nip' => "1234567890",
                     'phone_number' => "362718279",
+                    'description' => "",
+                    'localization' => json_encode(['lat' => 52.25490829401159, 'lng' => 21.014514614981326]),
+                    'avatar' => null,
+                    'background_image' => null,
+                    'contact_email' => null,
                     'user_id' => 1,
                     'province_id' => 5
                 ]

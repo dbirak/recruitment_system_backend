@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterCompanyRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Resources\CompanyProfileResource;
 use App\Http\Resources\UserResource;
 use App\Repositories\CompanyRepository;
 use App\Repositories\UserRepository;
@@ -92,6 +93,17 @@ class AuthService {
 
     public function validateUser($user, $isCorrectPassword)
     {
-        if (!$user || !$isCorrectPassword) throw new AuthenticationException("asdasdasdsa");
+        if (!$user || !$isCorrectPassword) throw new AuthenticationException("Brak dostępu!");
+    }
+
+    public function getCompanyProfile(string $userId)
+    {
+        $company = $this->companyRepository->getCompanyByUserId($userId);
+
+        $res = $this->companyRepository->getCompanyProfile($company['id']);
+
+        if(!$res) throw new Exception("Przedsiębiorstwo nie istnieje!");
+
+        return new CompanyProfileResource($res);
     }
 }

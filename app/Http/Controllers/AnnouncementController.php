@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\CustomException;
 use App\Http\Requests\AddAnnouncementRequest;
 use App\Http\Requests\BeginNewStepRequest;
 use App\Http\Requests\CloseAnnouncementRequest;
@@ -60,8 +61,8 @@ class AnnouncementController extends Controller
         }
         catch(Exception $e)
         {
-            if($e instanceof Exception)
-                    return response(['message' => $e->getMessage()], 404);
+            if ($e instanceof Exception)
+                    return response(['message' => $e->getMessage()], 400);
         }
     }
 
@@ -136,7 +137,7 @@ class AnnouncementController extends Controller
         catch(Exception $e)
         {
             if($e instanceof Exception)
-                    return response(['message' => $e->getMessage()], 404);
+                    return response(['message' => $e->getMessage()], 400);
         }
     }
 
@@ -156,7 +157,7 @@ class AnnouncementController extends Controller
         catch(Exception $e)
         {
             if($e instanceof Exception)
-                    return response(['message' => $e->getMessage()], 404);
+                    return response(['message' => $e->getMessage()], 400);
         }
     }
 
@@ -170,7 +171,7 @@ class AnnouncementController extends Controller
         catch(Exception $e)
         {
             if($e instanceof Exception)
-                    return response(['message' => $e->getMessage()], 404);
+                    return response(['message' => $e->getMessage()], 400);
         }
     }
 
@@ -184,7 +185,7 @@ class AnnouncementController extends Controller
         catch(Exception $e)
         {
             if($e instanceof Exception)
-                    return response(['message' => $e->getMessage()], 404);
+                    return response(['message' => $e->getMessage()], 400);
         }
     }
 
@@ -198,7 +199,7 @@ class AnnouncementController extends Controller
         catch(Exception $e)
         {
             if($e instanceof Exception)
-                    return response(['message' => $e->getMessage()], 404);
+                    return response(['message' => $e->getMessage()], 400);
         }
     }
 }

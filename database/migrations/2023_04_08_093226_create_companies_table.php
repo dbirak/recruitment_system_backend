@@ -23,6 +23,11 @@ return new class extends Migration
             $table->string('regon');
             $table->string('nip');
             $table->string('phone_number');
+            $table->mediumText('description');
+            $table->json('localization');
+            $table->string("avatar")->nullable();
+            $table->string("background_image")->nullable();
+            $table->string("contact_email")->nullable();
             $table->foreignIdFor(User::class)->constrained();
             $table->foreignIdFor(Province::class)->constrained();
             $table->timestamps();

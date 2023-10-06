@@ -37,7 +37,10 @@ class CompanyRepository
             'nip' => $request['nip'],
             'phone_number' => $request['numer telefonu'],
             'user_id' => $user->id,
-            'province_id' => $request['województwo']
+            'province_id' => $request['województwo'],
+            
+            'description' => "",
+            'localization' => json_encode(['lat' => 52.25490829401159, 'lng' => 21.014514614981326]),
         ]);
 
         return $user;
@@ -46,5 +49,10 @@ class CompanyRepository
     public function getCompanyByUserId(string $userId)
     {
         return $this->company::where('user_id', $userId)->first();
+    }
+
+    public function getCompanyProfile(string $companyId)
+    {
+        return $this->company::where('id', $companyId)->first();
     }
 }
