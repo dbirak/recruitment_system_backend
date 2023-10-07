@@ -60,6 +60,7 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::get('/company/answer/file-task/{fileName}', [FileTaskController::class, 'getFileAnswer']);
 
     Route::get('/company/profile', [AuthController::class, 'getCompanyProfile']);
+    Route::post('/company/profile', [AuthController::class, 'updateCompanyProfile']);
 });
 
 Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
