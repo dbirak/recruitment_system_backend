@@ -2,8 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Http\Requests\AddCommentRequest;
 use App\Http\Requests\RegisterCompanyRequest;
 use App\Http\Requests\UpdateCompanyProfileRequest;
+use App\Models\Announcement;
+use App\Models\Comment;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -11,12 +14,16 @@ use Illuminate\Support\Facades\Storage;
 class CompanyRepository
 {
     protected $company;
+    protected $announcement;
     protected $user;
+    protected $comment;
 
-    public function __construct(Company $company, User $user)
+    public function __construct(Company $company, User $user, Announcement $announcement, Comment $comment)
     {
         $this->company = $company;
         $this->user = $user;
+        $this->announcement = $announcement;
+        $this->comment = $comment;
     }
 
     public function create(RegisterCompanyRequest $request)
@@ -101,5 +108,57 @@ class CompanyRepository
         $company->save();
 
         return $company;
+    }
+
+    public function getCompanyAnnouncements(string $id)
+    {
+        return $this->announcement::where('company_id', $id)->orderby('created_at', 'desc')->paginate(5);
+    }
+
+    public function getCompanyComments(string $id)
+    {
+        return $this->comment::where('company_id', $id)->orderby('created_at', 'desc')->paginate(1);
+    }
+
+    public function getCompanyCommentsWithoutUserComment(string $id, string $userId)
+    {
+        return $this->comment::where('company_id', $id)->whereNot('user_id', $userId)->orderby('created_at', 'desc')->paginate(1);
+    }
+
+    public function getUserComment(string $id, string $userId)
+    {
+        return $this->comment::where('company_id', $id)->where('user_id', $userId)->first();
+    }
+
+    public function storeCompanyComment(AddCommentRequest $request, string $userId)
+    {
+        $newComment = new Comment();
+        $newComment->comment = $request['komentarz'];
+        $newComment->rating = $request['rating'];
+        $newComment->company_id = $request['company_id'];
+        $newComment->user_id = $userId;
+        $newComment->save();
+
+        return $newComment;
+    }
+
+    public function updateCompanyComment(AddCommentRequest $request, string $commentId)
+    {
+        $comment = $this->comment::where('id', $commentId)->first();
+        $comment->comment = $request['komentarz'];
+        $comment->rating = $request['rating'];
+        $comment->save();
+
+        return $comment;
+    }
+
+    public function getCommentById($commentId)
+    {
+        return $this->comment::where('id', $commentId)->first();
+    }
+
+    public function destroyCompanyComment($commentId)
+    {
+        $this->comment::where('id', $commentId)->delete();
     }
 }

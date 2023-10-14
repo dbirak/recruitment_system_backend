@@ -20,7 +20,7 @@ return new class extends Migration
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description');
+            $table->string('description', 550);
             $table->json('duties');
             $table->json('requirements');
             $table->json('offer');

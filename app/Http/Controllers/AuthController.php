@@ -65,32 +65,4 @@ class AuthController extends Controller
         $res = $this->authService->logoutUser($request);
         return response($res, 200);
     }
-
-    public function getCompanyProfile(Request $request)
-    {
-        try
-        {
-            $res = $this->authService->getCompanyProfile($request->user()->id);
-            return response($res, 200);
-        }
-        catch(Exception $e)
-        {
-            if($e instanceof Exception)
-                    return response(['message' => $e->getMessage()], 400);
-        }
-    }
-
-    public function updateCompanyProfile(UpdateCompanyProfileRequest $request)
-    {
-        try
-        {
-            $res = $this->authService->updateCompanyProfile($request, $request->user()->id);
-            return response($res, 200);
-        }
-        catch(Exception $e)
-        {
-            if($e instanceof Exception)
-                    return response(['message' => $e->getMessage()], 400);
-        }
-    }
 }

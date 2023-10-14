@@ -31,7 +31,6 @@ class CompanyProfileResource extends JsonResource
             'avatar' => $this->avatar,
             'background_image' => $this->background_image,
             'contact_email' => $this->contact_email,
-            'user' => new UserResource(User::findOrFail($this->user_id)),
             'province' => new ProvinceResource(Province::findOrFail($this->province_id)),
         ];
     }

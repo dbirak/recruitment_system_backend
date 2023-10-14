@@ -67,4 +67,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(SubmissionLock::class);
     }
+
+    public function comment()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

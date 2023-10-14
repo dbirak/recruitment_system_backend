@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CvTaskController;
 use App\Http\Controllers\FileTaskController;
 use App\Http\Controllers\OpenTaskController;
@@ -29,6 +30,10 @@ Route::get('/announcement/popular', [AnnouncementController::class, 'getPopularA
 Route::get('/announcement/{id}', [AnnouncementController::class, 'show']);
 Route::get('/announcement/search/info', [AnnouncementController::class, 'getSearchAnnouncementInfo']);
 Route::post('/announcement/search', [AnnouncementController::class, 'searchAnnouncement']);
+
+Route::get('/company-profile/{id}', [CompanyController::class, 'showCompanyProfileForUser']);
+Route::post('/company-profile/{id}/announcement', [CompanyController::class, 'getCompanyAnnouncements']);
+Route::post('/company-profile/{id}/comment', [CompanyController::class, 'getCompanyComments']);
 
 Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::get('/company/test', [TestTaskController::class, 'index']);
@@ -59,16 +64,22 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::get('/company/answer/cv-task/{fileName}', [CvTaskController::class, 'getCvAnswer']);
     Route::get('/company/answer/file-task/{fileName}', [FileTaskController::class, 'getFileAnswer']);
 
-    Route::get('/company/profile', [AuthController::class, 'getCompanyProfile']);
-    Route::post('/company/profile', [AuthController::class, 'updateCompanyProfile']);
+    Route::get('/company/profile', [CompanyController::class, 'getCompanyProfile']);
+    Route::post('/company/profile', [CompanyController::class, 'update']);
+
 });
 
 Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
     Route::get('/user/announcement/{id}', [AnnouncementController::class, 'showApplicationInfo']);    
     Route::post('/user/announcement/task-info', [AnnouncementController::class, 'getTaskUserInfo']);    
-
+    
     Route::post('/user/application/cv', [ApplicationController::class, 'storeCvTaskAnswer']);
-
+    
     Route::post('/user/task/info', [TaskController::class, 'getTaskInfo']);
     Route::post('/user/task/answer', [TaskController::class, 'storeTaskAnswer']);
+    
+    Route::post('/user/company-profile/{id}/comment', [CompanyController::class, 'getCompanyCommentsForUsers']);
+    Route::post('/user/company-profile/comment', [CompanyController::class, 'storeCompanyComment']);
+    Route::put('/user/company-profile/comment/{id}', [CompanyController::class, 'updateCompanyComment']);
+    Route::delete('/user/company-profile/comment/{id}', [CompanyController::class, 'destroyCompanyComment']);
 });

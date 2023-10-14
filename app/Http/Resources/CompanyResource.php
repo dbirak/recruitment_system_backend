@@ -26,7 +26,8 @@ class CompanyResource extends JsonResource
             'regon' => $this->regon,
             'nip' => $this->nip,
             'phone_number' => $this->phone_number,
-            'user' => new UserResource(User::findOrFail($this->user_id)),
+            'avatar' => $this->avatar,
+            'background_image' => $this->background_image,
             'province' => new ProvinceResource(Province::findOrFail($this->province_id)),
         ];
     }

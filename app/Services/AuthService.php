@@ -96,28 +96,4 @@ class AuthService {
     {
         if (!$user || !$isCorrectPassword) throw new AuthenticationException("Brak dostępu!");
     }
-
-    public function getCompanyProfile(string $userId)
-    {
-        $company = $this->companyRepository->getCompanyByUserId($userId);
-
-        $res = $this->companyRepository->getCompanyProfile($company['id']);
-
-        if(!$res) throw new Exception("Przedsiębiorstwo nie istnieje!");
-
-        return new CompanyProfileResource($res);
-    }
-
-    public function updateCompanyProfile(UpdateCompanyProfileRequest $request, string $userId)
-    {
-        $company = $this->companyRepository->getCompanyByUserId($userId);
-
-        $res = $this->companyRepository->getCompanyProfile($company['id']);
-
-        if(!$res) throw new Exception("Przedsiębiorstwo nie istnieje!");
-
-        $res = $this->companyRepository->updateCompanyProfile($request, $company['id']);
-
-        return new CompanyProfileResource($res);
-    }
 }
