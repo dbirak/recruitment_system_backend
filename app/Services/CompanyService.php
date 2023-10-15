@@ -6,10 +6,12 @@ use App\Http\Requests\AddCommentRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterCompanyRequest;
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\SearchCompanyRequest;
 use App\Http\Requests\UpdateCompanyProfileRequest;
 use App\Http\Resources\AnnouncementCollection;
 use App\Http\Resources\CommentCollection;
 use App\Http\Resources\CommentResource;
+use App\Http\Resources\CompanyCollection;
 use App\Http\Resources\CompanyProfileResource;
 use App\Http\Resources\UserResource;
 use App\Repositories\CompanyRepository;
@@ -132,5 +134,10 @@ class CompanyService {
         $this->companyRepository->destroyCompanyComment($commentId);
 
         return ['message' => "Komentarz został usunięty!"];
+    }
+
+    public function searchCompany(SearchCompanyRequest $request)
+    {
+        return new CompanyCollection($this->companyRepository->searchCompany($request));
     }
 }

@@ -30,10 +30,12 @@ Route::get('/announcement/popular', [AnnouncementController::class, 'getPopularA
 Route::get('/announcement/{id}', [AnnouncementController::class, 'show']);
 Route::get('/announcement/search/info', [AnnouncementController::class, 'getSearchAnnouncementInfo']);
 Route::post('/announcement/search', [AnnouncementController::class, 'searchAnnouncement']);
-
+ 
 Route::get('/company-profile/{id}', [CompanyController::class, 'showCompanyProfileForUser']);
 Route::post('/company-profile/{id}/announcement', [CompanyController::class, 'getCompanyAnnouncements']);
 Route::post('/company-profile/{id}/comment', [CompanyController::class, 'getCompanyComments']);
+
+Route::post('/company/search', [CompanyController::class, 'searchCompany']);
 
 Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::get('/company/test', [TestTaskController::class, 'index']);

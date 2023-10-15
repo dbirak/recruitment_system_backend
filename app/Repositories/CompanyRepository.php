@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Http\Requests\AddCommentRequest;
 use App\Http\Requests\RegisterCompanyRequest;
+use App\Http\Requests\SearchCompanyRequest;
 use App\Http\Requests\UpdateCompanyProfileRequest;
 use App\Models\Announcement;
 use App\Models\Comment;
@@ -117,7 +118,7 @@ class CompanyRepository
 
     public function getCompanyComments(string $id)
     {
-        return $this->comment::where('company_id', $id)->orderby('created_at', 'desc')->paginate(1);
+        return $this->comment::where('company_id', $id)->orderby('created_at', 'desc')->paginate(8);
     }
 
     public function getCompanyCommentsWithoutUserComment(string $id, string $userId)
@@ -160,5 +161,32 @@ class CompanyRepository
     public function destroyCompanyComment($commentId)
     {
         $this->comment::where('id', $commentId)->delete();
+    }
+
+    public function searchCompany(SearchCompanyRequest $request)
+    {
+        $query = Company::query();
+
+        if (empty($request['nazwa']) && empty($request['krs']) && empty($request['nip']) && $request['województwo'] === 0) {
+            return $companies = Company::paginate(20);
+        }
+
+        if ($request['województwo'] !== 0) {
+            $query->where('province_id', $request['województwo']);
+        } 
+
+        if (!empty($request['nazwa'])) {
+            $query->where('name', 'LIKE', "%".$request['nazwa']."%");
+        } 
+
+        if (!empty($request['krs'])) {
+            $query->where('krs', 'LIKE', "%".$request['krs']."%");
+        } 
+
+        if (!empty($request['nip'])) {
+            $query->where('nip', 'LIKE', "%".$request['nip']."%");
+        } 
+
+        return $companies = $query->paginate(20);
     }
 }

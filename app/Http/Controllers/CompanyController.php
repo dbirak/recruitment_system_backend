@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddCommentRequest;
+use App\Http\Requests\SearchCompanyRequest;
 use App\Http\Requests\UpdateCompanyProfileRequest;
 use App\Services\CompanyService;
 use Exception;
@@ -193,5 +194,11 @@ class CompanyController extends Controller
             if($e instanceof Exception)
                     return response(['message' => $e->getMessage()], 400);
         }
+    }
+
+    public function searchCompany(SearchCompanyRequest $request)
+    {
+        $res = $this->companyService->searchCompany($request);
+        return response($res, 200);
     }
 }
