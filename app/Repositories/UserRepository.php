@@ -6,6 +6,7 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserRepository {
@@ -53,5 +54,34 @@ class UserRepository {
     public function getUserById($userId)
     {
         return $this->user::where("id", $userId)->first();
+    }
+
+    public function changePassword(String $password, User $user)
+    {
+        $user->password = bcrypt($password);
+        $user->save();
+    }
+
+    public function findResetPasswordUsers(string $email)
+    {
+        return DB::table("password_reset_tokens")->where('email', $email)->first();
+    }
+
+    public function deleteResetPasswordUser($user)
+    {
+        DB::table('password_reset_tokens')->where('email', $user->email)->delete();
+    }
+
+    public function createForgotPasswordToken(string $token, string $email)
+    {
+        DB::table('password_reset_tokens')->insert([
+            'email' => $email, 
+            'token' => $token
+        ]);
+    }
+
+    public function findByResetToken(string $token)
+    {
+        return DB::table('password_reset_tokens')->where('token', $token)->first();
     }
 }

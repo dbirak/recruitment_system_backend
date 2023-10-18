@@ -1,2 +1,6 @@
-public/
+public/avatarImage
+public/backgroundImage
+public/cv
+public/fileAnswer
+!public/logo/
 !.gitignore

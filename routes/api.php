@@ -25,6 +25,8 @@ Route::post('/auth/register/user', [AuthController::class, 'registerUser']);
 Route::post('/auth/register/company', [AuthController::class, 'registerCompany']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/auth/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/auth/reset-password', [AuthController::class, 'resetPassword']);
 
 Route::get('/announcement/popular', [AnnouncementController::class, 'getPopularAnnouncement']);
 Route::get('/announcement/{id}', [AnnouncementController::class, 'show']);
@@ -58,6 +60,7 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::get('/company/announcement/{id}', [AnnouncementController::class, 'getCompanyAnnouncementById']);
     Route::post('/company/announcement/new-step', [AnnouncementController::class, 'beginNewStep']);
     Route::post('/company/announcement/end', [AnnouncementController::class, 'closeAnnouncement']);
+    Route::post('/company/announcement/mail', [AnnouncementController::class, 'sendMail']);
     
     Route::get('/company/application/{id}', [ApplicationController::class, 'getUsersByStep']);
     Route::post('/company/application/managment', [ApplicationController::class, 'managementUsersInStep']);

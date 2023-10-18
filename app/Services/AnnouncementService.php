@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Http\Mails\CompanyForUserMail;
 use App\Http\Requests\AddAnnouncementRequest;
 use App\Http\Requests\BeginNewStepRequest;
 use App\Http\Requests\CloseAnnouncementRequest;
 use App\Http\Requests\SearchAnnouncementRequest;
+use App\Http\Requests\SendMailRequest;
 use App\Http\Requests\TaskUserInformationRequest;
 use App\Http\Resources\AnnouncementCollection;
 use App\Http\Resources\AnnouncementResource;
@@ -43,6 +45,7 @@ use App\Repositories\WorkTimeRepository;
 use App\Repositories\WorkTypeRepository;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Mail;
 use PhpParser\JsonDecoder;
 
 use function PHPUnit\Framework\isEmpty;
@@ -419,5 +422,32 @@ class AnnouncementService {
         }
 
         return $this->announcementRepository->closeAnnouncementByLastStepId($request['step_id']);
+    }
+
+    public function sendMail(SendMailRequest $request, string $userId)
+    {
+        $company = $this->companyRepository->getCompanyByUserId($userId);
+
+        if($request['company_id'] !== $company['id']) throw new Exception("Brak uprawnień do wykonania akcji!");
+
+        $annoucement = $this->announcementRepository->getAnnouncementById($request['announcement_id']);
+
+        if($annoucement['company_id'] !== $request['company_id']) throw new Exception("Brak uprawnień do wykonania akcji!");
+
+        $steps = $this->stepRepository->getStepsFromAnnouncement($annoucement['id']);
+        
+        if(!in_array($request['user_id'], json_decode($steps[count($steps) - 1]['accepted_users']))) throw new Exception("Brak uprawnień do wykonania akcji!");
+
+        if($steps[count($steps) - 1]['is_active'] !== 0) throw new Exception("Brak uprawnień do wykonania akcji!");
+
+        $user = $this->userRepository->getUserById($request['user_id']);
+
+        $info['company'] = $company;
+        $info['user'] = $user;
+        $info['message'] = $request['message'];
+
+        Mail::to($user['email'])->send(new CompanyForUserMail($info));
+
+        return $res = ['message' => "Wiadomość została wysłana!"];
     }
 }

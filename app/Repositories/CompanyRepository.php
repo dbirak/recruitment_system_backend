@@ -123,7 +123,7 @@ class CompanyRepository
 
     public function getCompanyCommentsWithoutUserComment(string $id, string $userId)
     {
-        return $this->comment::where('company_id', $id)->whereNot('user_id', $userId)->orderby('created_at', 'desc')->paginate(1);
+        return $this->comment::where('company_id', $id)->whereNot('user_id', $userId)->orderby('created_at', 'desc')->paginate(8);
     }
 
     public function getUserComment(string $id, string $userId)
