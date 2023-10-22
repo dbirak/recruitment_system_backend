@@ -58,4 +58,9 @@ class OpenTaskRepository {
     {
         return $this->openAnswer::where('id', $id)->first();
     }
+
+    public function getOpenTasksCountById(string $userId)
+    {
+        return $this->openTask::where('user_id', $userId)->count();
+    }
 }

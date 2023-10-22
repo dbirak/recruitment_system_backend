@@ -10,6 +10,7 @@ use App\Models\Company;
 use App\Models\Step;
 use App\Models\Task;
 use Carbon\Carbon;
+use Ramsey\Uuid\Type\Integer;
 
 class AnnouncementRepository {
 
@@ -146,5 +147,15 @@ class AnnouncementRepository {
         $step->save();
 
         return $step;
+    }
+
+    public function getAnnouncementsCountByCompanyId(string $companyId)
+    {
+        return $this->announcement::where('company_id', $companyId)->count();
+    }
+
+    public function getAnnouncememntByCompanyId(string $companyId)
+    {
+        return $this->announcement::where('company_id', $companyId)->get();
     }
 }

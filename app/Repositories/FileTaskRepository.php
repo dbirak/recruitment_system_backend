@@ -62,4 +62,9 @@ class FileTaskRepository {
     {
         return $this->fileAnswer::where('id', $id)->first();
     }
+
+    public function getFileTasksCountById(string $userId)
+    {
+        return $this->fileTask::where('user_id', $userId)->count();
+    }
 }

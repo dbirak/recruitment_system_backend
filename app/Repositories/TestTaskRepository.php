@@ -129,4 +129,9 @@ class TestTaskRepository {
     {
         return $this->question::where('id', $id)->first();
     }
+
+    public function getTestsCountById(string $userId)
+    {
+        return $this->testTask::where('user_id', $userId)->count();
+    }
 }

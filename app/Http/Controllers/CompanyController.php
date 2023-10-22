@@ -201,4 +201,10 @@ class CompanyController extends Controller
         $res = $this->companyService->searchCompany($request);
         return response($res, 200);
     }
+
+    public function getStatistics(Request $request)
+    {
+        $res = $this->companyService->getStatistics($request->user()->id);
+        return response($res, 200);
+    }
 }

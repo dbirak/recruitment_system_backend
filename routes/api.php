@@ -72,6 +72,8 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::get('/company/profile', [CompanyController::class, 'getCompanyProfile']);
     Route::post('/company/profile', [CompanyController::class, 'update']);
 
+    Route::get('/company/statistics', [CompanyController::class, 'getStatistics']);
+
 });
 
 Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {

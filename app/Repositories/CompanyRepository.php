@@ -121,6 +121,11 @@ class CompanyRepository
         return $this->comment::where('company_id', $id)->orderby('created_at', 'desc')->paginate(8);
     }
 
+    public function getCompanyAllComments(string $id)
+    {
+        return $this->comment::where('company_id', $id)->get();
+    }
+
     public function getCompanyCommentsWithoutUserComment(string $id, string $userId)
     {
         return $this->comment::where('company_id', $id)->whereNot('user_id', $userId)->orderby('created_at', 'desc')->paginate(8);
@@ -189,4 +194,15 @@ class CompanyRepository
 
         return $companies = $query->paginate(20);
     }
+
+    public function getTwoLatestComments(string $companyId)
+    {
+        return $this->comment::where('company_id', $companyId)->orderby('created_at', 'desc')->limit(2)->get();
+    }
+
+    public function getCommentsCountByRating(string $companyId, int $rating)
+    {
+        return $this->comment::where('company_id', $companyId)->where('rating', $rating)->count();
+    }
+
 }
