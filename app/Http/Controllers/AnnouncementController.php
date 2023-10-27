@@ -217,4 +217,10 @@ class AnnouncementController extends Controller
                     return response(['message' => $e->getMessage()], 400);
         }
     }
+
+    public function getApplications(Request $request)
+    {
+        $res = $this->announcementService->getApplications($request->user()->id);
+        return response($res, 200);
+    }
 }

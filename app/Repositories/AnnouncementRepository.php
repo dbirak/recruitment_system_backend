@@ -158,4 +158,9 @@ class AnnouncementRepository {
     {
         return $this->announcement::where('company_id', $companyId)->get();
     }
+
+    public function getAnnouncementsByIds(array $announcementsIds)
+    {
+        return $this->announcement::whereIn('id', $announcementsIds)->orderby("created_at", "desc")->paginate(20);
+    }
 }

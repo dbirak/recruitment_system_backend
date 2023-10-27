@@ -108,4 +108,9 @@ class StepRepository {
         $updatedStep['applied_users'] = json_encode($appliedUsers);
         $updatedStep->save();
     }
+
+    public function getAppliedFirstSteps(string $userId)
+    {
+        return $this->step::where('step_number', 1)->where('applied_users', 'LIKE', "%".$userId."%")->orwhere('rejected_users', 'LIKE', "%".$userId."%")->orwhere('accepted_users', 'LIKE', "%".$userId."%")->get();
+    }
 }

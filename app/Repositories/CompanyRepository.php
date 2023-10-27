@@ -42,7 +42,7 @@ class CompanyRepository
             'street' => $request['ulica'],
             'post_code' => $request['kod pocztowy'],
             'city' => $request['miasto'],
-            'krs' => $request['krs'],
+            'krs' => $request['krs'] === "" ? null : $request['krs'],
             'regon' => $request['regon'],
             'nip' => $request['nip'],
             'phone_number' => $request['numer telefonu'],
@@ -75,7 +75,7 @@ class CompanyRepository
         $company['post_code'] = $request['post_code'];
         $company['city'] = $request['city'];
         $company['phone_number'] = $request['phone_number'];
-        $company['krs'] = $request['krs'];
+        $company['krs'] = $request['krs'] === "" ? null : $request['krs'];
         $company['nip'] = $request['nip'];
         
         if ($request['description'] === null) $company['description'] = "";

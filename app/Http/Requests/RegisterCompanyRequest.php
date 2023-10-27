@@ -32,7 +32,7 @@ class RegisterCompanyRequest extends FormRequest
             'ulica' => 'required|string|max:30',
             'kod pocztowy' => 'required|string|min:6|max:6|regex:/\d{2}-\d{3}/',
             'miasto' => 'required|string|max:30|regex:/^[a-zA-ZĄ-ŻĄąĆćĘęŁłŃńÓóŚśŹźŻż _-]{1,}$/',
-            'krs' => 'required|string|max:10|min:10',
+            'krs' => 'nullable|string|max:10|min:10',
             'regon' => 'required|string|min:9|max:9',
             'nip' => 'required|string|min:10|max:10',
             'numer telefonu' => 'required|string|min:9|max:9',

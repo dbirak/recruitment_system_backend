@@ -29,7 +29,7 @@ class UpdateCompanyProfileRequest extends FormRequest
             'city' => 'required|string|max:30|regex:/^[a-zA-ZĄ-ŻĄąĆćĘęŁłŃńÓóŚśŹźŻż _-]{1,}$/', 
             'phone_number' => 'required|string|min:9|max:9',
             'contact_email' => 'nullable|string|max:30',
-            'krs' => 'required|string|max:10|min:10',
+            'krs' => 'nullable|string|max:10|min:10',
             'nip' => 'required|string|min:10|max:10',
             'avatar' => 'mimes:jpeg,png,gif,bmp,jpg|max:4096',
             'background_image' => 'mimes:jpeg,png,gif,bmp,jpg|max:4096' 

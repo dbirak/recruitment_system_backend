@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('street');
             $table->string('post_code');
             $table->string('city');
-            $table->string('krs');
+            $table->string('krs')->nullable();
             $table->string('regon');
             $table->string('nip');
             $table->string('phone_number');

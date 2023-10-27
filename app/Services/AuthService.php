@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Mails\ResetPasswordMail;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterCompanyRequest;
@@ -142,6 +143,16 @@ class AuthService {
         $user = $this->userRepository->findResetPasswordUsers($user->email);
 
         if($user) $this->userRepository->deleteResetPasswordUser($user);
+
+        return $res = ['message' => 'Hasło zostało zmienione!'];
+    }
+
+    public function ChangePasswordRequest(ChangePasswordRequest $request)
+    {
+        $user = $this->userRepository->getUserById($request->user()->id);
+
+        if(!$this->userRepository->comparePassword($request['obecne hasło'], $user)) throw new Exception("Obecne hasło jest niepoprawne!");
+        $this->userRepository->changePassword($request['nowe hasło'], $user);
 
         return $res = ['message' => 'Hasło zostało zmienione!'];
     }

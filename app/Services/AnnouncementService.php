@@ -25,6 +25,7 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\UserTaskResource;
 use App\Http\Resources\WorkTimeResource;
 use App\Http\Resources\WorkTypeResource;
+use App\Jobs\SendMailJob;
 use App\Models\Announcement;
 use App\Models\Category;
 use App\Models\Company;
@@ -358,7 +359,6 @@ class AnnouncementService {
             $diff = array_diff(json_decode($previewPreviewStep["accepted_users"]), json_decode($previewStep['applied_users']));
 
             if(!empty(array_diff($diff, json_decode($previewStep['rejected_users']), json_decode($previewStep['accepted_users'])))) throw new Exception("Nie można rozpocząć nowego etapu, ponieważ w aktualnym etapie są osoby oczekujące na decyzję!");
-
         }
 
         $updatedStep = $this->stepRepository->beginNewStepInAnnouncement($request, $step, $allSteps);
@@ -449,5 +449,46 @@ class AnnouncementService {
         Mail::to($user['email'])->send(new CompanyForUserMail($info));
 
         return $res = ['message' => "Wiadomość została wysłana!"];
+    }
+
+    public function getApplications(string $userId)
+    {
+        $appliedFirstSteps = $this->stepRepository->getAppliedFirstSteps($userId);
+
+        $announcementsId = [];
+
+        foreach($appliedFirstSteps as $step)
+        {
+            array_push($announcementsId, $step['announcement_id']);
+        }
+
+        $announcements = $this->announcementRepository->getAnnouncementsByIds($announcementsId);
+
+        foreach($announcements as &$annoucement)
+        {
+            $steps = $this->stepRepository->getStepsFromAnnouncement($annoucement['id']);
+
+            if(in_array(intval($userId), json_decode($steps[count($steps) - 1]['accepted_users'])))
+            {
+                $info['recruitment_info'] = "accepted";
+            }
+            else
+            {
+                $info['recruitment_info'] = "in_recruitment";
+
+                foreach ($steps as $step)
+                {
+                    if(in_array(intval($userId), json_decode($step['rejected_users'])))
+                    {
+                        $info['recruitment_info'] = "rejected";
+                        break;
+                    }
+                }
+            }
+            
+            $annoucement['steps'] = $info;
+        }
+
+        return new AnnouncementCollection($announcements);
     }
 }

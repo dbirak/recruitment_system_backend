@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\RegisterCompanyRequest;
@@ -87,6 +88,20 @@ class AuthController extends Controller
         try
         {
             $res = $this->authService->resetPassword($request);
+            return response($res, 200);
+        }
+        catch(Exception $e)
+        {
+            if($e instanceof Exception)
+                return response(['message' => $e->getMessage()], 400);
+        }
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        try
+        {
+            $res = $this->authService->ChangePasswordRequest($request);
             return response($res, 200);
         }
         catch(Exception $e)

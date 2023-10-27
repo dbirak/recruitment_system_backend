@@ -74,6 +74,8 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
 
     Route::get('/company/statistics', [CompanyController::class, 'getStatistics']);
 
+    Route::post('/auth/company/change-password', [AuthController::class, 'changePassword']);
+
 });
 
 Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
@@ -89,4 +91,8 @@ Route::middleware(['auth:sanctum', 'ability:user'])->group(function () {
     Route::post('/user/company-profile/comment', [CompanyController::class, 'storeCompanyComment']);
     Route::put('/user/company-profile/comment/{id}', [CompanyController::class, 'updateCompanyComment']);
     Route::delete('/user/company-profile/comment/{id}', [CompanyController::class, 'destroyCompanyComment']);
+
+    Route::get("/user/applications", [AnnouncementController::class, 'getApplications']);
+
+    Route::post('/auth/user/change-password', [AuthController::class, 'changePassword']);
 });
