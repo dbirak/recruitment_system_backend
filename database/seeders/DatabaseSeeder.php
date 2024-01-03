@@ -23,6 +23,14 @@ class DatabaseSeeder extends Seeder
             WorkTimeSeeder::class,
             WorkTypeSeeder::class,
             TaskSeeder::class,
+            AnswerSeeder::class,
+            QuestionSeeder::class,
+            TestTaskSeeder::class,
+            AnswerQuestionSeeder::class,
+            OpenTaskSeeder::class,
+            FileTaskSeeder::class,
+            AnnouncementSeeder::class,
+            StepSeeder::class
         ]);
     }
 }

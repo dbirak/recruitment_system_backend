@@ -21,6 +21,7 @@ use App\Repositories\OpenTaskRepository;
 use App\Repositories\StepRepository;
 use App\Repositories\TestTaskRepository;
 use App\Repositories\UserRepository;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
@@ -175,9 +176,9 @@ class CompanyService {
         {
             $steps = $this->stepRepository->getStepsFromAnnouncement($announcement['id']);
 
-            if($steps[0]['is_active'] === 1) $activeAnnouncements++;
+            if($steps[count($steps) - 1]['is_active'] !== 0 && $steps[0]['expiry_date'] < Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d')) $inAnnouncements++;
             if($steps[count($steps) - 1]['is_active'] === 0) $endedAnnouncements++;
-            if($steps[count($steps) - 1]['is_active'] !== 0 && $steps[0]['is_active'] === 0) $inAnnouncements++;
+            if($steps[0]['is_active'] === 1 && $steps[0]['expiry_date'] > Carbon::now()) $activeAnnouncements++;
         }
 
         $res['active_announcement_count'] = $activeAnnouncements;

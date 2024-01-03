@@ -7,7 +7,7 @@
   </head>
   <body style=" font-family: sans-serif;">
     <div style="margin: 30px auto">
-        <img src='{{url('storage/logo/logo.png')}}' style="width:80px; margin: 0 auto; display: block; margin-top: 30px">
+        <img src='{{url('https://i.ibb.co/fNMB3zc/logo.png')}}' style="width:80px; margin: 0 auto; display: block; margin-top: 30px">
         <div style="font-size: 31px; text-align: center; font-weight: 600; margin-top: 9px; color: #301301">WorkHunter</div>
     </div>
     <div style="max-width: 450px; margin: 10px auto 0px auto;">
