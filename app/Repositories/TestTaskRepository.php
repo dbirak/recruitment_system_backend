@@ -134,4 +134,31 @@ class TestTaskRepository {
     {
         return $this->testTask::where('user_id', $userId)->count();
     }
+
+    public function deleteTest(string $testId)
+    {
+        $answerQuestion = $this->answerQuestion::where('test_task_id', $testId)->get();
+        $questionIds = [];
+        $answerIds = [];
+
+        foreach($answerQuestion as $item)
+        {
+            if (!in_array($item['question_id'], $questionIds)) array_push($questionIds, $item['question_id']);
+            array_push($answerIds, $item['answer_id']);
+        }
+
+        $this->answerQuestion::where('test_task_id', $testId)->delete();
+
+        foreach($questionIds as $item)
+        {
+            $this->question::where('id', $item)->delete();
+        }
+
+        foreach($answerIds as $item)
+        {
+            $this->answer::where('id', $item)->delete();
+        }
+
+        $this->testTask::where('id', $testId)->delete();
+    }
 }

@@ -67,4 +67,9 @@ class FileTaskRepository {
     {
         return $this->fileTask::where('user_id', $userId)->count();
     }
+
+    public function deleteFileTask(string $id)
+    {
+        $this->fileTask::where('id', $id)->delete();
+    }
 }

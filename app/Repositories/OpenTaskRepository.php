@@ -63,4 +63,9 @@ class OpenTaskRepository {
     {
         return $this->openTask::where('user_id', $userId)->count();
     }
+
+    public function deleteOpenTask(string $id)
+    {
+        $this->openTask::where('id', $id)->delete();
+    }
 }

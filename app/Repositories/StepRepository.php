@@ -113,4 +113,19 @@ class StepRepository {
     {
         return $this->step::where('step_number', 1)->where('applied_users', 'LIKE', "%".$userId."%")->orwhere('rejected_users', 'LIKE', "%".$userId."%")->orwhere('accepted_users', 'LIKE', "%".$userId."%")->get();
     }
+
+    public function getStepsByOpenTask(string $openTaskId)
+    {
+        return $this->step::where('open_task_id', $openTaskId)->get();
+    }
+
+    public function getStepsByFileTask(string $fileTaskId)
+    {
+        return $this->step::where('file_task_id', $fileTaskId)->get();
+    }
+
+    public function getStepsByTestTask(string $testTaskId)
+    {
+        return $this->step::where('test_task_id', $testTaskId)->get();
+    }
 }

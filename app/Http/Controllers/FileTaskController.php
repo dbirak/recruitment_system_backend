@@ -79,9 +79,18 @@ class FileTaskController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $taskId, Request $request)
     {
-        //
+        try
+        {
+            $res = $this->fileTaskService->deleteFileTask($taskId, $request->user()->id);
+            return response($res, 200);
+        }
+        catch(Exception $e)
+        {
+            if($e instanceof Exception)
+                    return response(['message' => $e->getMessage()], 409);
+        }
     }
 
     public function getFileAnswer(string $fileName)
