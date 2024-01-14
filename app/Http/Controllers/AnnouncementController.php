@@ -176,6 +176,20 @@ class AnnouncementController extends Controller
         }
     }
 
+    public function extendDateCurrentStep(BeginNewStepRequest $request)
+    {
+        try
+        {
+            $res = $this->announcementService->extendDateCurrentStepInAnnouncement($request, $request->user()->id);
+            return response($res, 201);
+        }
+        catch(Exception $e)
+        {
+            if($e instanceof Exception)
+                    return response(['message' => $e->getMessage()], 400);
+        }
+    }
+
     public function getTaskUserInfo(TaskUserInformationRequest $request)
     {
         try

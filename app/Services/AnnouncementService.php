@@ -366,6 +366,25 @@ class AnnouncementService {
         return $updatedStep;
     }
 
+    public function extendDateCurrentStepInAnnouncement(BeginNewStepRequest $request, string $userId)
+    {
+        $step = $this->stepRepository->getStepById($request['step_id']);    
+        if(!isset($step)) throw new Exception("Etap nie isnieje!");
+    
+        $announcement = $this->announcementRepository->getAnnouncementByIdWhitoutExpiryDate($step['announcement_id']);
+
+        $company = $this->companyRepository->getCompanyByUserId($request->user()->id);
+
+        if($announcement['company_id'] !== $company['id']) throw new Exception("Brak uprawnień do zasobu!");
+        if($step['is_active'] !== 1) throw new Exception("Wybrany etap nie jest aktualny!");
+        if($request['data_zakonczenia'] <= $step['expiry_date']) throw new Exception("Data zakończenia nie może być wcześniejsza niż obecna data!");
+        if($request['data_zakonczenia'] <= Carbon::now()->setTimezone('Europe/Warsaw')->format('Y-m-d')) throw new Exception("Data zakończenia nie może być wcześniejsza niż dzisiejsza data!");
+
+        $updatedStep = $this->stepRepository->extendDateCurrentStepInAnnouncement($request, $step);
+
+        return $updatedStep;
+    }
+
     public function getTaskUserInfo(TaskUserInformationRequest $request, string $userId)
     {
         $step = $this->stepRepository->getStepById($request['id']);

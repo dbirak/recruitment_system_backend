@@ -62,6 +62,7 @@ Route::middleware(['auth:sanctum', 'ability:company'])->group(function () {
     Route::get('/company/announcement', [AnnouncementController::class, 'getCompanyAnnouncements']);
     Route::get('/company/announcement/{id}', [AnnouncementController::class, 'getCompanyAnnouncementById']);
     Route::post('/company/announcement/new-step', [AnnouncementController::class, 'beginNewStep']);
+    Route::post('/company/announcement/new-date-step', [AnnouncementController::class, 'extendDateCurrentStep']);
     Route::post('/company/announcement/end', [AnnouncementController::class, 'closeAnnouncement']);
     Route::post('/company/announcement/mail', [AnnouncementController::class, 'sendMail']);
     

@@ -100,6 +100,12 @@ class StepRepository {
         return $step;
     }
 
+    public function extendDateCurrentStepInAnnouncement(BeginNewStepRequest $request, Step $step)
+    {
+        $step['expiry_date'] = $request['data_zakonczenia'];
+        $step->save();
+    }
+
     public function addNewAppliedToStep(int $stepId, string $userId)
     {
         $updatedStep = $this->step::where("id", $stepId)->first();
