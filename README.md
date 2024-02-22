@@ -47,11 +47,9 @@ Backend setup:
 <br>
 
 Frontend setup:
-1. Download the repository
-2. In XAMPP run the apache and mysql module
-3. Install dependencies with the command `npm install`
-4. Run `npm run dev` for a dev server.
-5. The application is available at `localhost:3000`
+1. Install dependencies with the command `npm install`
+2. Run `npm run dev` for a dev server.
+3. The application is available at `localhost:3000`
 
 <br>
 
@@ -122,34 +120,6 @@ In order for the application to function properly, the limit of data inserted in
 ![55](https://github.com/dbirak/recruitment_system_backend/assets/41111309/4d6c744b-bca5-4362-ab91-c7fbd86bacf5)
 ![56](https://github.com/dbirak/recruitment_system_backend/assets/41111309/a76566d9-a95d-4f58-b177-46a8f1a7f1b9)
 ![57](https://github.com/dbirak/recruitment_system_backend/assets/41111309/00515339-0e4f-4b82-a274-66dd07cfc033)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
