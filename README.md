@@ -55,18 +55,18 @@ Frontend setup:
 
 <br>
 
-WARNING!<br>
+:warning: Warning! :warning: <br>
 In order for the application to function properly, the limit of data inserted into the database must be increased from 1MB to 16MB using a query `SET GLOBAL max_allowed_packet=16777216`
 
 ## Screenshots
 
 ![aaa](https://github.com/dbirak/recruitment_system_backend/assets/41111309/e1d6bc2d-cfaf-4011-81c4-779dd1795c9c)
+![2](https://github.com/dbirak/recruitment_system_backend/assets/41111309/68546c3b-2582-48c3-88d4-ca48a95506ff)
 ![a2](https://github.com/dbirak/recruitment_system_backend/assets/41111309/733280e3-1ce0-41d5-b949-ebfdae070562)
 ![a3](https://github.com/dbirak/recruitment_system_backend/assets/41111309/adda2e17-06af-450b-b80c-71745583a5ed)
 ![a4](https://github.com/dbirak/recruitment_system_backend/assets/41111309/31634798-3b3a-4c2f-aabc-413e045eff5b)
 ![a5](https://github.com/dbirak/recruitment_system_backend/assets/41111309/348e2d6b-ebdf-4a4a-bd9f-ab564039df2c)
 ![a6](https://github.com/dbirak/recruitment_system_backend/assets/41111309/82dfcf6d-0d19-48d7-adf5-0bdee8e86b5c)
-![2](https://github.com/dbirak/recruitment_system_backend/assets/41111309/68546c3b-2582-48c3-88d4-ca48a95506ff)
 ![3](https://github.com/dbirak/recruitment_system_backend/assets/41111309/a2339ee6-f38b-4e5a-b749-2b418ad970f4)
 ![4](https://github.com/dbirak/recruitment_system_backend/assets/41111309/a8c99803-4bfe-4123-99e8-d9f90a0b2853)
 ![5](https://github.com/dbirak/recruitment_system_backend/assets/41111309/becbc2e5-2575-4d48-b6f6-b631c1b06ddf)
