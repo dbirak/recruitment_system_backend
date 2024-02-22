@@ -20,22 +20,41 @@ Main functionalities included in the application:
 
 ## Technologies
 
-React (libraries: Tailwindcss, React-beautiful-dnd, DaisyUI, React-pdf-tailwind)
+<p>
+  <img src="https://img.shields.io/badge/php-%23777BB4.svg?style=for-the-badge&logo=php&logoColor=white" alt="php">
+  <img src="https://img.shields.io/badge/laravel-%23FF2D20.svg?style=for-the-badge&logo=laravel&logoColor=white" alt="laravel">
+  <img src="https://img.shields.io/badge/mysql-%23016086.svg?style=for-the-badge&logo=mysql&logoColor=white" alt="mysql">
+  <img src="https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white" alt="nextjs">
+  <img src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E" alt="nextjs">
+</p>
 
 ## Installation
 
+Required software:
+- `XAMPP v.3.3.0`
+- `Composer v.2.4.3`
+- `NPM v.9.5.0`
+- `NodeJS v.18.14.2`
+
+<br>
+
+Backend setup:
 1. Download the repository
-2. Install the appropriate modules with the command:
+2. In XAMPP run the apache and mysql module
+3. Run the script with the command `.\script.bat`
+4. Run `php artisan serve` for a dev server.
 
-```url
-npm install
-```
+<br>
 
-3. Run the application with the command:
+Frontend setup:
+1. Download the repository
+2. In XAMPP run the apache and mysql module
+3. Install dependencies with the command `npm install`
+4. Run `npm run dev` for a dev server.
 
-```url
-npm run dev
-```
+<br>
+
+The application is available at `localhost:3000`
 
 ## Screenshots
 
