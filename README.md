@@ -1,66 +1,46 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+This is the backend part of the application. The frontend part is available <a href="https://github.com/dbirak/recruitment_system_frontend">here.</a>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Description
 
-## About Laravel
+WorkHunter is an innovative tool created in response to dynamic changes in the modern labor market. The purpose of the application is to improve and facilitate recruitment processes both for employers looking for suitable candidates and for people looking for new employment opportunities.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Main functionalities included in the application:
+- Two-sided Service: The application provides comprehensive service for both employers and job seekers.
+- Creating Job Offers: Employers can create attractive job offers by precisely describing requirements and expectations.
+- Creating Recruitment Stages: Employers can define the stages of the recruitment process, adapting it to their specific needs by creating tests, open questions or file modules.
+- Recruitment Process Customization: Flexibility in establishing recruitment stages tailored to the individual needs of the company.
+- Advertisement Management: Effective management of advertisements, monitoring their effectiveness.
+- Personalized Job Search: Job seekers can personalize their search to suit their skills and preferences.
+- Applying for Positions: A process of applying for interesting positions.
+- Employee Application Management: Employers have access to an intuitive panel for managing applications from potential employees.
+- New User Registration: Easy new user registration for both employers and job seekers.
+- Company Profile Management: A company can configure and manage its profile in the system.
+- Adding Opinions: Employees can add opinions about companies, supporting the transparency of the labor market.
+- Login, Registration, Password Reset: Secure and quick login, intuitive registration of new users, and the ability to reset passwords for those who forget.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Technologies
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+React (libraries: Tailwindcss, React-beautiful-dnd, DaisyUI, React-pdf-tailwind)
 
-## Learning Laravel
+## Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. Download the repository
+2. Install the appropriate modules with the command:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```url
+npm install
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+3. Run the application with the command:
 
-## Laravel Sponsors
+```url
+npm run dev
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Screenshots
 
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+<video src="https://user-images.githubusercontent.com/41111309/226407586-24f1d177-10be-45c9-94c2-08d53060de44.mp4" controls="controls" style="max-width: 730px;"></video>
+![image](https://user-images.githubusercontent.com/41111309/226402177-f8deed7d-97f8-4d78-9e2b-58ec79b9267d.png)
+![image](https://user-images.githubusercontent.com/41111309/226402289-2b2c61d6-df0a-46d4-ad78-0564daaa1ff0.png)
+![image](https://user-images.githubusercontent.com/41111309/226402632-4acb9d48-7feb-450e-9dce-f716edab7437.png)
+![image](https://user-images.githubusercontent.com/41111309/226402965-c813621b-5f1b-48ba-8118-7913995dc19e.png)
